@@ -117,5 +117,7 @@
     <string name="name">Name</string>
     <string name="location">location</string>
     <string name="rating">Rating</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="phone">Phone</string>
 
 </resources>

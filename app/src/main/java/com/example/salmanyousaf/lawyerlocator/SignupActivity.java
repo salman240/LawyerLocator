@@ -666,7 +666,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 accountType.equals("client") ? editTextCaseType.getText().toString() : "Not applicable",
                 editTextFee.getText().toString(),
                 editTextDescription.getText().toString(),
-                accountType.equals("lawyer") ? editTextExperience.getText().toString() : "Not applicable",
+                accountType.equals("lawyer") ? editTextExperience.getText().toString().concat(" years") : "Not applicable",
                 textViewLocation.getText().toString(),
                 gender,
                 uri.toString(),

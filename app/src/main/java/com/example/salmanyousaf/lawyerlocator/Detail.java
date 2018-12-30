@@ -9,14 +9,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,13 +54,13 @@ import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 public class Detail extends AppCompatActivity implements RatingDialogListener, View.OnClickListener {
 
     @BindView(R.id.detailView)
-    RelativeLayout mView;
+    CoordinatorLayout mView;
+
+    @BindView(R.id.toolBar)
+    android.support.v7.widget.Toolbar toolbarEmail;
 
     @BindView(R.id.imageViewDetail)
     ImageView imageView;
-
-    @BindView(R.id.tvEmail)
-    TextView textViewEmail;
 
     @BindView(R.id.textViewUsername)
     TextView textViewName;
@@ -83,14 +86,11 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     @BindView(R.id.textViewExperience)
     TextView textViewExperience;
 
-    @BindView(R.id.tvExperience)
-    TextView tvExperience;
-
     @BindView(R.id.buttonCall)
     Button buttonCall;
 
     @BindView(R.id.buttonMap)
-    Button buttonPathFinder;
+    FloatingActionButton buttonPathFinder;
 
     @BindView(R.id.buttonMessage)
     Button buttonMessage;
@@ -108,7 +108,16 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     TextView waitingTextView;
 
     @BindView(R.id.buttonRating)
-    Button buttonRate;
+    FloatingActionButton buttonRate;
+
+    @BindView(R.id.layout_experience)
+    LinearLayout layoutExp;
+
+    @BindView(R.id.layout_case_type)
+    LinearLayout layoutCaseType;
+
+    @BindView(R.id.cardRating)
+    CardView layoutRating;
 
     private String senderEmail;
     private String reciverEmail;
@@ -150,21 +159,21 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         if(Account.equals("lawyer"))
         {
             SetProfileImage(data.getProfileImage());
-            textViewEmail.setText(data.getEmail());
+            toolbarEmail.setTitle(data.getEmail());
             textViewName.setText(data.getName());
             textViewLocation.setText(data.getLocation());
             textViewCaseType.setText(data.getCaseType());
             textViewDescription.setText(data.getDescription());
             textViewContact.setText(data.getPhone());
             textViewDate.setText(utils.FormatDateTime(data.getDateTime()));
-            tvExperience.setVisibility(View.INVISIBLE);
-            textViewExperience.setVisibility(View.INVISIBLE);
-            ratingBar.setVisibility(View.INVISIBLE);
+            textViewExperience.setVisibility(View.GONE);
+            layoutExp.setVisibility(View.GONE);
+            layoutRating.setVisibility(View.GONE);
         }
         else if(Account.equals("client"))
         {
             SetProfileImage(data.getProfileImage());
-            textViewEmail.setText(data.getEmail());
+            toolbarEmail.setTitle(data.getEmail());
             textViewName.setText(data.getName());
             textViewLocation.setText(data.getLocation());
             textViewDescription.setText(data.getDescription());
@@ -172,7 +181,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
             textViewDate.setText(utils.FormatDateTime(data.getDateTime()));
             textViewExperience.setText(data.getExperience());
             getRating();
-            textViewCaseType.setVisibility(View.INVISIBLE);
+            layoutCaseType.setVisibility(View.GONE);
         }
 
         //apply system call and msg intents on buttons
@@ -185,6 +194,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         getIsReserve();
     }//onCreate
 
+    @SuppressLint("IntentReset")
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.buttonCall)
@@ -198,7 +208,8 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         {
             Toast.makeText(Detail.this, "Opening messaging app!", Toast.LENGTH_SHORT).show();
             Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-            sendIntent.setDataAndType(Uri.parse("sms:" + data.getPhone()), "vnd.android-dir/mms-sms");
+            sendIntent.setData(Uri.parse("sms:" + data.getPhone()));
+            sendIntent.setType("vnd.android-dir/mms-sms");
             sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(sendIntent);
         }
