@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#128c7e</color>
+    <color name="colorPrimaryDark">#FF07564E</color>
+    <color name="colorAccent">#333</color>
+    <color name="textColorhint">#999</color>
+    <color name="textColorEditText">#333</color>
+    <color name="textColorButton">#fff</color>
+    <color name="red">#a10404</color>
+    <color name="green">#FF0A7115</color>
+    <color name="f1f1f1">#f1f1f1</color>
+    <color name="black">#000</color>
+    <color name="redNight">#fa0101</color>
+
+</resources>

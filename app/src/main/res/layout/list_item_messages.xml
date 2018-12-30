@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeParent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:padding="8dp"
+    android:background="?android:attr/selectableItemBackground">
+
+
+
+    <TextView
+        android:id="@+id/tvSenderMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Sender"
+        android:textSize="20sp"
+        android:paddingTop="8dp"
+        android:textColor="#d8d8d8"
+        android:background="@drawable/message_send"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/tvSenderDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvSenderMessage"
+        android:layout_alignParentRight="true"
+        android:text="DateTime"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:textSize="12sp"
+        android:textColor="#888"
+        android:fontFamily="serif" />
+
+
+
+    <TextView
+        android:id="@+id/tvRecieverMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="Reciever"
+        android:textSize="20sp"
+        android:paddingTop="8dp"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/message_recieve"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/tvRecieverDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvRecieverMessage"
+        android:layout_alignParentLeft="true"
+        android:text="DateTime"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:textSize="12sp"
+        android:textColor="#888"
+        android:fontFamily="serif" />
+
+
+</RelativeLayout>

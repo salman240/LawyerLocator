@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/noNetworkRoot"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.salmanyousaf.lawyerlocator.NoNetworkActivity">
+
+    <TextView
+        android:id="@+id/textViewNoNet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="32sp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:text="@string/noNetwork"/>
+
+    <TextView
+        android:id="@+id/textViewNoNetDetails"
+        android:layout_below="@id/textViewNoNet"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/networkWarning"/>
+
+    <Button
+        android:id="@+id/buttonRetry"
+        android:layout_below="@id/textViewNoNetDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/tryAgain"
+        android:background="@drawable/button"
+        android:textColor="@android:color/white"
+        android:padding="10dp"/>
+
+</RelativeLayout>

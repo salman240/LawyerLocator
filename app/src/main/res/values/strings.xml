@@ -1,0 +1,121 @@
+<resources>
+
+    <string-array name="search_bar">
+        <item>Azam</item>
+        <item>Asif</item>
+        <item>Salman</item>
+        <item>Usman</item>
+        <item>Bilal</item>
+    </string-array>
+
+
+    <string name="app_name">Lawyer Locator</string>
+
+
+    <string name="Prompt_Cities">Select a city</string>
+    <string name="Prompt_Gender">Select a gender</string>
+
+    <string name="create">Create Account</string>
+    <string name="profile">Select Image</string>
+    <string name="login">Login</string>
+    <string name="email">Enter Email</string>
+    <string name="password">Enter Password</string>
+    <string name="hintLoginEmail">Enter Email</string>
+    <string name="hintLoginPassword">Enter Password</string>
+    <string name="clientSignup">Client Signup</string>
+    <string name="lawyerSignup">Lawyer Signup</string>
+    <string name="LoginName">Enter Name here</string>
+    <string name="LoginEmail">Enter Email here</string>
+    <string name="LoginPhoneNo">Enter Phone Number here</string>
+    <string name="LoginPassword">Enter Password here</string>
+    <string name="LoginLocation">Select Location</string>
+    <string name="selectGender">Select Gender</string>
+    <string name="carrier">Enter your carrier info here</string>
+    <string name="experience">Enter your Experience here(in Years)</string>
+    <string name="editProfilePic">Edit Profile Image</string>
+    <string name="editAccount">Edit profile</string>
+    <string name="LoginCaseType">Enter Case Type</string>
+    <string name="LoginDescription">Enter Description</string>
+    <string name="LoginCost">Enter Cost (in PKR)</string>
+    <string name="LoginExperience">Enter Experience (in Years)</string>
+    <string name="selectProfile">Select Profile</string>
+    <string name="select">Open Gallery</string>
+
+
+    <string name="aboutUs">About Us</string>
+    <string name="quit">Quit</string>
+
+    <string name="noNetwork">No Internet Connection</string>
+    <string name="networkWarning">Please check your internet connection and try again.</string>
+    <string name="tryAgain">Try Again</string>
+
+    <string-array name="cities_gender">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Others</item>
+    </string-array>
+
+    <string-array name="cities_array">
+        <item>Lahore</item>
+        <item>Faislabad</item>
+        <item>Islmabad</item>
+        <item>Karachi</item>
+        <item>Quetta</item>
+        <item>Multan</item>
+        <item>Peshawar</item>
+        <item>Rawalpindi</item>
+        <item>Sialkot</item>
+        <item>Gujrat</item>
+        <item>Kasur</item>
+        <item>Bahawalnagar</item>
+        <item>Dera Gazi Khan</item>
+    </string-array>
+    <string name="title_activity_data">DataActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="noNotifications">No Notifications</string>
+    <string name="requestSent">Request is Sent. Waiting for Approval</string>
+    <string name="zeroMessages">0 Messages</string>
+    <string name="serverProblemOccurs">Server Problem Occurs!</string>
+    <string name="writeMessage">Write Message…</string>
+    <string name="detail">Detail</string>
+    <string name="Email">Email</string>
+    <string name="Name">Name</string>
+    <string name="Location">Location</string>
+    <string name="path_finder">Path Finder</string>
+    <string name="casetype">Casetype</string>
+    <string name="no_rating_found">No Rating Found!</string>
+    <string name="message">Message</string>
+    <string name="call">Call</string>
+    <string name="chat">Chat</string>
+    <string name="reserve_user">Reserve User:</string>
+    <string name="description">Description:</string>
+    <string name="contact">Contact:</string>
+    <string name="time">Time:</string>
+    <string name="datetime">DateTime</string>
+    <string name="developed_by_samtech_2018">Developed by SamTech @2018</string>
+    <string name="Experience">Experience:</string>
+    <string name="experiences">Experience</string>
+    <string name="no_data_found">No data found!</string>
+    <string name="check_ip_address_from_menu_and_try_again">Check Ip Address from menu and try again.</string>
+    <string name="refresh">Refresh</string>
+    <string name="you_have_no_chats">You have no Chats !</string>
+
+
+    <string name="title_activity_maps">Map</string>
+    <string name="server_database_is_empty">Server Database is empty!</string>
+
+    <string name="myProfile">My Profile</string>
+    <string name="waiting_for_approval">Waiting for Approval</string>
+    <string name="type_ip_address">Type Ip Address</string>
+    <string name="splash_name">Lawyer Locator</string>
+    <string name="search">Search</string>
+    <string name="name">Name</string>
+    <string name="location">location</string>
+    <string name="rating">Rating</string>
+
+</resources>

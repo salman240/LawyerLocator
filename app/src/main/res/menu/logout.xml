@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/logout"
+        android:title="Logout"
+        app:showAsAction="never"
+        android:orderInCategory="0"/>
+    
+    <item android:id="@+id/ProfileInfo"
+        android:title="My profile"
+        android:orderInCategory="3"
+        app:showAsAction="never">
+    </item>
+
+    <item
+        android:id="@+id/aboutUs"
+        android:title="@string/aboutUs"
+        android:orderInCategory="3"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/setting"
+        android:title="Settings"
+        android:orderInCategory="4"
+        android:icon="@drawable/ic_settings_white_24dp"
+        app:showAsAction="always"/>
+
+    <!--
+    <item android:id="@+id/editProfile"
+        android:title="Edit profile"
+        android:orderInCategory="3"
+        app:showAsAction="never">
+    </item>
+    -->
+
+</menu>

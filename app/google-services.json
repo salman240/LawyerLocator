@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "24243290291",
+    "firebase_url": "https://lawyer-locator-e6c12.firebaseio.com",
+    "project_id": "lawyer-locator-e6c12",
+    "storage_bucket": "lawyer-locator-e6c12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24243290291:android:9365ab817fb087b7",
+        "android_client_info": {
+          "package_name": "com.example.salmanyousaf.lawyerlocator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "24243290291-b1rdrrcl1lffef1cf3iob3tnqj2r8gf0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.salmanyousaf.lawyerlocator",
+            "certificate_hash": "4b43a2012a827712fbd2ca40317b335248056e3d"
+          }
+        },
+        {
+          "client_id": "24243290291-l6062slu4n9pov6ev2tn0fot2l65ucbu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUkYE6ON7nukCiJ1LZ79SX4nPjfJVEcAo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "24243290291-l6062slu4n9pov6ev2tn0fot2l65ucbu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
