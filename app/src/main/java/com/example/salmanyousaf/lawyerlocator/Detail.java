@@ -237,13 +237,15 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         super.onPause();
 
         if(getRatingValueEventListener != null) {
-            ratingDatabaseReference.removeEventListener(getRatingValueEventListener);
+            ratingDatabaseReference.child(reciverEmail).removeEventListener(getRatingValueEventListener);
             getRatingValueEventListener = null;
+            ratingDatabaseReference = null;
         }
 
         if(getReserveEventValueListener != null) {
-            reserveDatabaseReference.removeEventListener(getReserveEventValueListener);
+            reserveDatabaseReference.child(reciverEmail).child(senderEmail).removeEventListener(getReserveEventValueListener);
             getReserveEventValueListener = null;
+            reserveDatabaseReference = null;
         }
     }
 

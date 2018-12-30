@@ -62,17 +62,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     com.rey.material.widget.CheckBox rememberMe;
 
     private boolean mEditTextChanged;
-//    private SharedPreferences sharedPreferences;
     private Unbinder unbinder;
     private Utils utils = new Utils(this);
 
-    private boolean isEmailTouched = true;
-    private boolean isPasswordTouched = true;
+    private boolean isEmailTouched = false;
+    private boolean isPasswordTouched = false;
 
     private DatabaseReference userDatabaseReference;
-    private ValueEventListener valueEventListener;
-    private boolean isSignInSuccessfull;
-    private Signup signedUser;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("ClickableViewAccessibility")
@@ -81,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
-        Paper.init(this);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         userDatabaseReference = firebaseDatabase.getReference("User");
@@ -201,7 +196,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             buttonLogin.setVisibility(View.GONE);
             loadingIndicator.setVisibility(View.VISIBLE);
 
-            userDatabaseReference.child(encodeEmail(editTextEmail.getText().toString())).addListenerForSingleValueEvent(new ValueEventListener() {
+            userDatabaseReference.child(encodeEmail(editTextEmail.getText().toString()))
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     loadingIndicator.setVisibility(View.GONE);
@@ -209,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (dataSnapshot.exists()) {
                         Signup signedUser = dataSnapshot.getValue(Signup.class);
 
-                        if(signedUser.getPassword().equals(editTextPassword.getText().toString())) {
+                        if(Objects.requireNonNull(signedUser).getPassword().equals(editTextPassword.getText().toString())) {
                             Toasty.success(MainActivity.this, "Sign in Successfull", Toast.LENGTH_SHORT, true).show();
 
                             signedUser.setEmail(editTextEmail.getText().toString());
@@ -294,8 +291,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        if(valueEventListener != null)
-        userDatabaseReference.removeEventListener(valueEventListener);
     }
 
     @Override

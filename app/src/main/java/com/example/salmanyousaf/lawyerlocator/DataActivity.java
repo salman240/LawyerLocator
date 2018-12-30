@@ -44,7 +44,6 @@ public class DataActivity extends AppCompatActivity{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
-        Paper.init(this);
 
         //AppBar hotfix
         AppBarLayout appBarLayout = findViewById(R.id.appbar);

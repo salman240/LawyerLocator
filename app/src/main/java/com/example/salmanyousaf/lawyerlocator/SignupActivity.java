@@ -158,7 +158,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         unbinder = ButterKnife.bind(this);
@@ -531,18 +530,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             if(requestCode == SELECT_FILE)
             {
                 profileImageUri = data.getData();
-//                Bitmap bitmap = null;
-//
-//                try {
-//                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), profileImageUri);
-//                    bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    Snackbar.make(mView, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
-//                }
-//
-
-
                 imageView.setImageURI(profileImageUri);
                 imageView.setVisibility(View.VISIBLE);
             }
@@ -556,7 +543,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             }
             else
             {
-                Snackbar.make(mView, "Data foramt not correct!", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mView, "Data format not correct!", Snackbar.LENGTH_SHORT).show();
             }
         }
         else {
