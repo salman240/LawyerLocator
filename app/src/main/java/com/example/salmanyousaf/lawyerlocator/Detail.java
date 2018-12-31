@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
+import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Chats;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Rating;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Signup;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,6 +41,7 @@ import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -119,19 +122,25 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     @BindView(R.id.cardRating)
     CardView layoutRating;
 
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout appBarLayout;
+
     private String senderEmail;
     private String reciverEmail;
     private Utils utils = new Utils(this);
     private Unbinder unbinder;
 
     private DatabaseReference ratingDatabaseReference;
-    private ValueEventListener getRatingValueEventListener;
     private DatabaseReference reserveDatabaseReference;
+    private DatabaseReference chatDatabaseReference;
+
+    private ValueEventListener getRatingValueEventListener;
     private ValueEventListener getReserveEventValueListener;
 
     private Signup data;
     private float userRating;
     private float ratingToShow = 0;
+    private boolean isChatOpened;
 
     @SuppressLint("NewApi")
     @Override
@@ -144,6 +153,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         ratingDatabaseReference = firebaseDatabase.getReference("Rating");
         reserveDatabaseReference = firebaseDatabase.getReference("Reserve");
+        chatDatabaseReference = firebaseDatabase.getReference("Chat");
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -190,6 +200,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         buttonChat.setOnClickListener(this);
         buttonRate.setOnClickListener(this);
         buttonPathFinder.setOnClickListener(this);
+        appBarLayout.setOnClickListener(this);
 
         getIsReserve();
     }//onCreate
@@ -199,14 +210,12 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     public void onClick(View v) {
         if(v.getId() == R.id.buttonCall)
         {
-            Toast.makeText(Detail.this, "Opening calling app!", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"  + data.getPhone()));
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
         }
         else if(v.getId() == R.id.buttonMessage)
         {
-            Toast.makeText(Detail.this, "Opening messaging app!", Toast.LENGTH_SHORT).show();
             Intent sendIntent = new Intent(Intent.ACTION_VIEW);
             sendIntent.setData(Uri.parse("sms:" + data.getPhone()));
             sendIntent.setType("vnd.android-dir/mms-sms");
@@ -215,10 +224,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         }
         else if(v.getId() == R.id.buttonChat)
         {
-            Toast.makeText(Detail.this, "Opening chat app!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Detail.this, Chat.class);
-            intent.putExtra("reciever", reciverEmail);
-            startActivity(intent);
+            getChatRef();
         }
         else if(v.getId() == R.id.buttonRating)
         {
@@ -229,6 +235,12 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
             String location = textViewLocation.getText().toString();
             Intent map = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + location));
             startActivity(map);
+        }
+        else if(v.getId() == R.id.app_bar_layout)
+        {
+            Intent intent = new Intent(Detail.this, ShowImageActivity.class);
+            intent.putExtra("image", data.getProfileImage());
+            startActivity(intent);
         }
     }
 
@@ -362,10 +374,65 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         });
     }
 
+    private void getChatRef() {
+        chatDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    for(DataSnapshot chats : dataSnapshot.getChildren())
+                    {
+                        Chats chat = chats.getValue(Chats.class);
+                        if(chat != null)
+                        {
+                            //sender and reciever must have one node
+                            if( (chat.getChatReciever().equals(reciverEmail) && chat.getChatSender().equals(senderEmail)) ||
+                                    (chat.getChatReciever().equals(senderEmail) && chat.getChatSender().equals(reciverEmail)) )
+                            {
+                                isChatOpened = true;
+                            }
+                        }
+                    }
+
+                    if(isChatOpened) {
+                        openChatActivity();
+                    }
+                    else {
+                        insertChat();
+                    }
+                }
+                else
+                {
+                    insertChat();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toasty.error(Detail.this, databaseError.getMessage(), Toast.LENGTH_LONG, true).show();
+            }
+        });
+    }
+
+    private void insertChat(){
+        Chats chats = new Chats(senderEmail, reciverEmail, DateTime.now().toString(), null);
+        chatDatabaseReference.push().setValue(chats).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                openChatActivity();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toasty.error(Detail.this, e.getLocalizedMessage(), Toast.LENGTH_LONG, true).show();
+            }
+        });
+    }
+
 
     //Helper methods
     private void SetProfileImage(String profileData) {
-        Picasso.get().load(profileData).fit().into(imageView);
+        Picasso.get().load(profileData).placeholder(R.drawable.placeholder_image).error(R.drawable.no_image).fit().into(imageView);
     }
 
     private void setOnReserveClickListener() {
@@ -448,6 +515,11 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     @Override
     public void onPositiveButtonClicked(int i, @NotNull String s) {
         insertRating(i);
+    }
+
+    private void openChatActivity() {
+        Intent intent = new Intent(Detail.this, ChatActivity.class);
+        startActivity(intent);
     }
 
 }//class ends.

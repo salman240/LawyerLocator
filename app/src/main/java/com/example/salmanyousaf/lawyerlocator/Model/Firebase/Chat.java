@@ -1,32 +1,19 @@
-package com.example.salmanyousaf.lawyerlocator.Model;
+package com.example.salmanyousaf.lawyerlocator.Model.Firebase;
 
-
-public class Chat
-{
-    //Data Model for ChatActivity.
-
-
-    private int mId;
-
+public class Chat {
     private String mSender;
-
     private String mReciever;
-
     private String mDatetime;
 
-    public Chat(int id, String sender, String reciever, String datetime)
+    public Chat(){}
+
+    public Chat(String sender, String reciever, String datetime)
     {
-        mId = id;
         mSender = sender;
         mReciever = reciever;
         mDatetime = datetime;
     }
 
-
-    public int getChatId()
-    {
-        return mId;
-    }
 
     public String getChatSender()
     {
@@ -43,4 +30,4 @@ public class Chat
         return mDatetime;
     }
 
-}//class ends
+}

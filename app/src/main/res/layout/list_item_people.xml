@@ -45,6 +45,7 @@
         android:textColor="#777"
         android:maxLines="1"
         android:ellipsize="end"
+        android:gravity="center_vertical"
         android:layout_marginRight="16dp"
         android:paddingTop="4dp"
         android:layout_toEndOf="@id/image_view"

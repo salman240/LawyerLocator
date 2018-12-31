@@ -228,7 +228,8 @@ public class FragmentPeople extends Fragment{
 
                 name.setText(model.getName());
                 location.setText(model.getLocation());
-                Picasso.get().load(model.getProfileImage()).fit().into(image);
+                Picasso.get().load(model.getProfileImage()).placeholder(R.drawable.placeholder_image).error(R.drawable.no_image)
+                        .fit().into(image);
 
                 //clickListener
                 holder.setItemClickListener(new CustomItemClickListener() {

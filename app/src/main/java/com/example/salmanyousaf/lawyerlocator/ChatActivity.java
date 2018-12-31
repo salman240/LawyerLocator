@@ -36,7 +36,7 @@ import butterknife.Unbinder;
 
 
 
-public class Chat extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
 
     @BindView(R.id.mViewChat)
     LinearLayout mView;
@@ -62,7 +62,7 @@ public class Chat extends AppCompatActivity {
     @BindAnim(R.anim.zoom_in)
     Animation recycleAnimation;
 
-    //private static final String LOGCAT = "Chat";
+    //private static final String LOGCAT = "ChatActivity";
     private String SenderEmail;
     private int id;
     int itemCount;
@@ -143,7 +143,7 @@ public class Chat extends AppCompatActivity {
                 }
             });
 
-            //Get Messages ... When coming from Chat Fragment
+            //Get Messages ... When coming from ChatActivity Fragment
 //            disposable.add(
 //                 apiService.messages(id)
 //                 .subscribeOn(Schedulers.io())
@@ -279,7 +279,7 @@ public class Chat extends AppCompatActivity {
 //                                    editTextMessage.setVisibility(View.GONE);
 //                                    imageView.setVisibility(View.GONE);
 //
-//                                    Toast.makeText(Chat.this, "Please go to Chat Tab to send messages!", Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(ChatActivity.this, "Please go to ChatActivity Tab to send messages!", Toast.LENGTH_LONG).show();
 //                                }
 //
 //                                @Override

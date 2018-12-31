@@ -16,7 +16,7 @@
 
         <com.rengwuxian.materialedittext.MaterialEditText
             style="@style/signupEditTextStyle"
-            android:text="Salman@lawloc.com"
+            android:text="salman@lawloc.com"
             android:id="@+id/editTextEmail"
             android:inputType="textWebEmailAddress"
             android:layout_marginTop="24dp"

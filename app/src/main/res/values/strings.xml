@@ -120,4 +120,8 @@
     <string name="profile_image">Profile Image</string>
     <string name="phone">Phone</string>
 
+    <string name="title_activity_show_image">ShowImageActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>

@@ -28,10 +28,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:visibility="gone"
+        android:visibility="visible"
         android:indeterminate="true"
         android:indeterminateTintMode="src_atop"
-        android:indeterminateTint="@color/colorPrimary"/>
+        android:indeterminateTint="@color/colorPrimary"
+        tools:ignore="UnusedAttribute" />
 
 
     <TextView

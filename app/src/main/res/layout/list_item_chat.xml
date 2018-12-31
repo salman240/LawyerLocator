@@ -1,49 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/RelativeParentChat"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:padding="8dp"
     android:background="?android:attr/selectableItemBackground">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_view"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_alignParentLeft="true"
-        android:src="@drawable/ic_people_black_24dp"
+        android:src="@mipmap/ic_launcher"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:contentDescription="@string/app_name" />
-
+        android:contentDescription="@string/app_name"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/image_view"
-        android:text="Name"
+        android:text="@string/name"
         android:textSize="20sp"
         android:layout_marginTop="20dp"
         android:textColor="?android:textColorPrimary"
-        android:paddingLeft="16dp" />
-
-
+        android:layout_toEndOf="@id/image_view"
+        tools:ignore="RelativeOverlap" />
 
     <TextView
         android:id="@+id/date_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="DateTime"
-        android:textSize="14sp"
+        android:text="@string/datetime"
+        android:textSize="13sp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="64dp"
         android:textColor="#888"
-        android:fontFamily="serif" />
+        android:layout_below="@id/name_text_view"
+        android:layout_marginEnd="16dp"
+        android:layout_toRightOf="@id/image_view"
+        tools:ignore="RelativeOverlap"
+        android:gravity="center_vertical"
+        android:drawableLeft="@drawable/ic_access_time_green_24dp"
+        android:layout_toEndOf="@id/image_view"
+        android:drawableStart="@drawable/ic_access_time_green_24dp" />
 
 
 </RelativeLayout>

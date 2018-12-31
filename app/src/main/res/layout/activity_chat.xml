@@ -4,9 +4,21 @@
     android:layout_width="match_parent"
     android:id="@+id/mViewChat"
     android:layout_height="match_parent"
-    android:layout_marginBottom="2dp"
     android:orientation="vertical"
-    tools:context=".Chat">
+    tools:context=".ChatActivity">
+
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_margin="4dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/colorPrimary"
+        tools:ignore="UnusedAttribute" />
+
 
     <TextView
         android:id="@+id/textViewNoDataOnDB"
@@ -16,7 +28,7 @@
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:textSize="22sp"
-        android:textColor="@android:color/holo_blue_light"
+        android:textColor="@color/colorAccent"
         android:text="@string/zeroMessages"
         android:visibility="gone"
         />
@@ -29,10 +41,9 @@
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:textSize="22sp"
-        android:textColor="@android:color/holo_red_light"
+        android:textColor="@color/error_stroke_color"
         android:text="@string/serverProblemOccurs"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatRecycleView"
@@ -42,38 +53,32 @@
         android:scrollbars="vertical"/>
 
     <View
-        android:background="#d8d8d8"
+        android:background="#cfcbcb"
         android:layout_width="match_parent"
-        android:layout_marginBottom="12dp"
         android:layout_height="0.5dp"/>
-
-    <ProgressBar
-        android:id="@+id/loading_indicator"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_gravity="center_horizontal"
-        android:visibility="invisible"
-        android:indeterminate="true"
-        android:indeterminateTintMode="src_atop"
-        android:indeterminateTint="@color/colorPrimary"/>
-
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/EditTextMessage"
             android:hint="@string/writeMessage"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textColor="#666"
+            android:inputType="textCapSentences"
+            android:background="@drawable/chat_edittext" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="44dp"
             android:padding="10dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
