@@ -5,21 +5,17 @@ import android.util.Log;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
-
 public class HelperMethods {
 
     public String FormatDateTime(String dateTime)
     {
-        if(dateTime.equals("Just Now"))
-            return "Just Now";
-
-        DateTime datetime = ISODateTimeFormat.dateTimeParser().withOffsetParsed().parseDateTime(dateTime);
-        String weekDay = WeekDaysToString(datetime.getDayOfWeek());
-        int day = datetime.getDayOfMonth();
-        String month = MonthToString(datetime.getMonthOfYear());
-        int year = datetime.getYear();
-        int hour = datetime.getHourOfDay();
-        int minute = datetime.getMinuteOfHour();
+        DateTime time = DateTime.parse(dateTime);
+        String weekDay = WeekDaysToString(time.getDayOfWeek());
+        int day = time.getDayOfMonth();
+        String month = MonthToString(time.getMonthOfYear());
+        int year = time.getYear();
+        int hour = time.getHourOfDay();
+        int minute = time.getMinuteOfHour();
         //int second = datetime.getMillisOfSecond();
 
         //Checking if am or pm
