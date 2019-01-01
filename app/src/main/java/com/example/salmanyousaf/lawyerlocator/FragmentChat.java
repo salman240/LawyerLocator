@@ -19,20 +19,19 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.salmanyousaf.lawyerlocator.Adapter.ChatViewHolder;
 import com.example.salmanyousaf.lawyerlocator.Adapter.Chat_Adapter;
-import com.example.salmanyousaf.lawyerlocator.Adapter.PeopleViewHolder;
-import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
 import com.example.salmanyousaf.lawyerlocator.Interfaces.CustomItemClickListener;
-import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Chat;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Chats;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -40,11 +39,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.paperdb.Paper;
 
-import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.decodeEmail;
+import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 
 
 public class FragmentChat extends Fragment {
-
 
     @BindView(R.id.mChatView)
     RelativeLayout mView;
@@ -67,14 +65,13 @@ public class FragmentChat extends Fragment {
     @BindView(R.id.loading_indicator)
     ProgressBar loadingIndicator;
 
-    private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
-    private FirebaseRecyclerAdapter<Chats, ChatViewHolder> adapter;
+    private ChildEventListener childEventListener;
 
-    private Utils utils;
+    private Chat_Adapter adapter;
+    private List<Chats> chatList;
 
     private Unbinder unbinder;
-
 
     public FragmentChat() { }
 
@@ -82,28 +79,24 @@ public class FragmentChat extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        utils = new Utils(getActivity());
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if(adapter != null)
-            adapter.startListening();
+        getChats();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
+        databaseReference.removeEventListener(childEventListener);
     }
 
     @Override
     public void onDestroy() {
         unbinder.unbind();
         super.onDestroy();
-        if(adapter != null)
-            adapter.stopListening();
     }
 
     @Override
@@ -119,10 +112,10 @@ public class FragmentChat extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Chat");
 
-        getChats();
+        chatList = new ArrayList<>();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -131,7 +124,6 @@ public class FragmentChat extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -143,53 +135,53 @@ public class FragmentChat extends Fragment {
 
     //Helper methods (Firebase Call)
     public void getChats() {
-        final String senderEmail = Paper.book().read("email");
+        final String senderEmail = encodeEmail(Paper.book().read("email").toString());
+        chatList.clear();
 
-        FirebaseRecyclerOptions<Chats> options = new FirebaseRecyclerOptions.Builder<Chats>()
-                .setQuery(  databaseReference.orderByChild("chatSender").equalTo(senderEmail), Chats.class).build();
-
-        adapter = new FirebaseRecyclerAdapter<Chats, ChatViewHolder>(options) {
-            @NonNull
+        childEventListener = new ChildEventListener() {
             @Override
-            public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_chat, viewGroup, false);
-                return new ChatViewHolder(view);
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(loadingIndicator != null)
+                    loadingIndicator.setVisibility(View.GONE);
+
+                Chats chats = dataSnapshot.getValue(Chats.class);
+                if(chats != null) {
+                    if (chats.getChatReciever().equals(senderEmail) || chats.getChatSender().equals(senderEmail))
+                        chatList.add(chats);
+                }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull ChatViewHolder holder, int position, @NonNull final Chats model) {
-                loadingIndicator.setVisibility(View.GONE);
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                //Views init
-                TextView name = holder.itemView.findViewById(R.id.name_text_view);
-
-                //showing the 2nd persons name rather than sender
-                if(senderEmail.equals(model.getChatReciever()))
-                {
-                    name.setText(decodeEmail(model.getChatSender()));
-                }
-                else
-                {
-                    name.setText(decodeEmail(model.getChatReciever()));
-                }
-
-                //onclick listener
-                holder.setItemClickListener(new CustomItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        Intent intent = new Intent(getActivity(), ChatActivity.class);
-                        startActivity(intent);
-                    }
-                });
             }
 
             @Override
-            public void onError(@NonNull DatabaseError error) {
-                super.onError(error);
-                Snackbar.make(mView, error.getMessage(), Snackbar.LENGTH_LONG).show();
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Snackbar.make(mView, databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         };
+        databaseReference.addChildEventListener(childEventListener);
 
+        //setting adapter
+        adapter = new Chat_Adapter(chatList, senderEmail, new CustomItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 
