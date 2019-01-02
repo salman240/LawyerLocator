@@ -141,6 +141,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     private float userRating;
     private float ratingToShow = 0;
     private boolean isChatOpened;
+    private String key;
 
     @SuppressLint("NewApi")
     @Override
@@ -390,6 +391,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
                                     (chat.getChatReciever().equals(senderEmail) && chat.getChatSender().equals(reciverEmail)) )
                             {
                                 isChatOpened = true;
+                                key = chats.getKey();
                             }
                         }
                     }
@@ -416,7 +418,9 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
 
     private void insertChat(){
         Chats chats = new Chats(senderEmail, reciverEmail, DateTime.now().toString(), null);
-        chatDatabaseReference.push().setValue(chats).addOnSuccessListener(new OnSuccessListener<Void>() {
+        key = chatDatabaseReference.push().getKey();
+        assert key != null;
+        chatDatabaseReference.child(key).setValue(chats).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 openChatActivity();
@@ -519,6 +523,9 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
 
     private void openChatActivity() {
         Intent intent = new Intent(Detail.this, ChatActivity.class);
+        intent.putExtra("key", key);
+        intent.putExtra("recieverEmail", reciverEmail);
+        intent.putExtra("senderEmail", senderEmail);
         startActivity(intent);
     }
 

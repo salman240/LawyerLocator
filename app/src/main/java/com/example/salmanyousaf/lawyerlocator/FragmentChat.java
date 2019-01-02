@@ -19,16 +19,15 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.salmanyousaf.lawyerlocator.Adapter.Chat_Adapter;
 import com.example.salmanyousaf.lawyerlocator.Interfaces.CustomItemClickListener;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Chats;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,6 @@ import butterknife.Unbinder;
 import io.paperdb.Paper;
 
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
-
 
 public class FragmentChat extends Fragment {
 
@@ -66,12 +64,13 @@ public class FragmentChat extends Fragment {
     ProgressBar loadingIndicator;
 
     private DatabaseReference databaseReference;
-    private ChildEventListener childEventListener;
+    private ValueEventListener valueEventListener;
 
     private Chat_Adapter adapter;
     private List<Chats> chatList;
 
     private Unbinder unbinder;
+    private List<String> keyList;
 
     public FragmentChat() { }
 
@@ -90,7 +89,11 @@ public class FragmentChat extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        databaseReference.removeEventListener(childEventListener);
+        if(valueEventListener != null)
+        {
+            databaseReference.removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
     }
 
     @Override
@@ -116,6 +119,7 @@ public class FragmentChat extends Fragment {
         databaseReference = firebaseDatabase.getReference("Chat");
 
         chatList = new ArrayList<>();
+        keyList = new ArrayList<>();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -133,38 +137,30 @@ public class FragmentChat extends Fragment {
     }
 
 
-    //Helper methods (Firebase Call)
+    //Firebase Call
     public void getChats() {
         final String senderEmail = encodeEmail(Paper.book().read("email").toString());
-        chatList.clear();
 
-        childEventListener = new ChildEventListener() {
+        valueEventListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(loadingIndicator != null)
                     loadingIndicator.setVisibility(View.GONE);
 
-                Chats chats = dataSnapshot.getValue(Chats.class);
-                if(chats != null) {
-                    if (chats.getChatReciever().equals(senderEmail) || chats.getChatSender().equals(senderEmail))
-                        chatList.add(chats);
+                chatList.clear();
+                keyList.clear();
+
+                for(DataSnapshot chatDataSnapshot : dataSnapshot.getChildren()) {
+                    Chats chats = chatDataSnapshot.getValue(Chats.class);
+                    if (chats != null) {
+                        if (chats.getChatReciever().equals(senderEmail) || chats.getChatSender().equals(senderEmail)) {
+                            chatList.add(chats);
+                            //for storing key of each chat
+                            keyList.add(chatDataSnapshot.getKey());
+                        }
+                    }
                 }
                 adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
             }
 
             @Override
@@ -172,18 +168,20 @@ public class FragmentChat extends Fragment {
                 Snackbar.make(mView, databaseError.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         };
-        databaseReference.addChildEventListener(childEventListener);
+        databaseReference.addValueEventListener(valueEventListener);
 
         //setting adapter
         adapter = new Chat_Adapter(chatList, senderEmail, new CustomItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("key", keyList.get(position));
+                intent.putExtra("recieverEmail", chatList.get(position).getChatReciever());
+                intent.putExtra("senderEmail", chatList.get(position).getChatSender());
                 startActivity(intent);
             }
         });
         recyclerView.setAdapter(adapter);
     }
-
 
 }//class ends

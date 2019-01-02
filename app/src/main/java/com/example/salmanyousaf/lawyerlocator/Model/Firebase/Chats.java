@@ -1,8 +1,6 @@
 package com.example.salmanyousaf.lawyerlocator.Model.Firebase;
 
 
-import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Chat;
-
 import java.util.List;
 
 public class Chats

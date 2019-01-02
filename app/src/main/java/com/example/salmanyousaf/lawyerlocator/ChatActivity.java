@@ -1,7 +1,9 @@
 package com.example.salmanyousaf.lawyerlocator;
 
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,27 +20,34 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.salmanyousaf.lawyerlocator.Interfaces.CustomItemClickListener;
-import com.example.salmanyousaf.lawyerlocator.Model.Message;
-import com.example.salmanyousaf.lawyerlocator.Adapter.Message_Adapter;
-import com.example.salmanyousaf.lawyerlocator.Model.OnlineStatus;
+import com.example.salmanyousaf.lawyerlocator.Adapter.MessageViewHolder;
+import com.example.salmanyousaf.lawyerlocator.Helper.HelperMethods;
+import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Chat;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import org.joda.time.DateTime;
+
+import java.util.Objects;
 
 import butterknife.BindAnim;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import es.dmoral.toasty.Toasty;
+import io.paperdb.Paper;
+
+import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 
 
+public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-public class ChatActivity extends AppCompatActivity {
-
+    private static final String MESSAGES = "messages";
     @BindView(R.id.mViewChat)
     LinearLayout mView;
 
@@ -62,336 +72,180 @@ public class ChatActivity extends AppCompatActivity {
     @BindAnim(R.anim.zoom_in)
     Animation recycleAnimation;
 
-    //private static final String LOGCAT = "ChatActivity";
-    private String SenderEmail;
-    private int id;
-    int itemCount;
-    private String reciever;
     private ActionBar actionBar;
-    private String RecieverEmail;
-
-    private Timer timer;
-    private Message_Adapter adapter;
+    private FirebaseRecyclerAdapter<Chat, MessageViewHolder> adapter;
+    private String key;
 
     private Unbinder unbinder;
+    private DatabaseReference chatDatabaseReference;
+    private DatabaseReference userDatabaseReference;
+    private ValueEventListener valueEventListener;
 
+    private String senderEmail;
+    private String recieverEmail;
 
+    private HelperMethods helperMethods = new HelperMethods();
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         unbinder = ButterKnife.bind(this);
 
-//        SharedPreferences sharedPreferences = helperMethods.GetLoginSharedPreferences();
-//        SenderEmail = sharedPreferences.getString(SENDEREMAIL, null);
-
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        chatDatabaseReference = firebaseDatabase.getReference("Chat");
+        userDatabaseReference = firebaseDatabase.getReference("User");
 
         actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setTitle(R.string.chat);
+        Objects.requireNonNull(actionBar).setTitle(R.string.chat);
 
         Intent intent = getIntent();
-        id = intent.getIntExtra("Data", 0);
-        reciever = intent.getStringExtra("reciever");
-        actionBar.setSubtitle(reciever);
+        key = intent.getStringExtra("key");
+        senderEmail = intent.getStringExtra("senderEmail");
+        recieverEmail = intent.getStringExtra("recieverEmail");
 
+        //check if user is actually the sender(conflict caused by FragmentChat)
+        if(!encodeEmail(Paper.book().read("email").toString()).equals(senderEmail))
+        {
+            recieverEmail = senderEmail;
+            senderEmail = encodeEmail(Paper.book().read("email").toString());
+        }
 
-        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
+        imageView.setOnClickListener(this);
+
+        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAnimation(recycleAnimation);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+
+        //loading chats
+        getChat();
+        getStatus();
     }
 
+    @Override
+    public void onClick(View v) {
+        sendMessage();
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //Calling api network thread
-        AsyncCall();
-
-        //refreshing messages, Declaring the timer
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                AsyncCall();
-            }
-        }, 10000, 15000);
+        adapter.startListening();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(valueEventListener != null)
+        {
+            userDatabaseReference.child(recieverEmail).child("status").removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
+        adapter.stopListening();
+    }
 
     @Override
     public void onDestroy() {
         unbinder.unbind();
-        timer.cancel();
         super.onDestroy();
     }
 
-    //Helper methods
-    public void AsyncCall()
-    {
-        if(id != 0)
-        {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    loadingIndicator.setVisibility(View.VISIBLE);
-                    textViewNoData.setVisibility(View.GONE);
-                    textViewServerProblem.setVisibility(View.GONE);
-                }
-            });
 
-            //Get Messages ... When coming from ChatActivity Fragment
-//            disposable.add(
-//                 apiService.messages(id)
-//                 .subscribeOn(Schedulers.io())
-//                 .observeOn(AndroidSchedulers.mainThread())
-//                 .subscribeWith(new DisposableSingleObserver<List<Message>>() {
-//                     @Override
-//                     public void onSuccess(List<Message> messages) {
-//                         loadingIndicator.setVisibility(View.INVISIBLE);
-//
-//                         if(messages.size() == 0)
-//                         {
-//                             adapter = null;
-//                             recyclerView.setAdapter(null);
-//
-//                             actionBar.setSubtitle("0 Messages");
-//                             textViewNoData.setVisibility(View.VISIBLE);
-//
-//                         }
-//                         else
-//                         {
-//                             //Only refresh the adapter if data is changed
-//                             if(itemCount == messages.size())
-//                             {
-//                                 return;
-//                             }
-//                             else
-//                             {
-//                                 itemCount = messages.size();
-//                             }
-//
-//                             Collections.reverse(messages);
-//                             adapter = new Message_Adapter(messages, SenderEmail, new CustomItemClickListener() {
-//                                 @Override
-//                                 public void onItemClick(View v, int position) {
-//
-//                                 }
-//                             });
-//                             recyclerView.setAdapter(adapter);
-//
-//                             //Setting name and status on actionBar
-//                             String msgReciever = messages.get(0).getMessageReciever();
-//                             String msgSender = messages.get(0).getMessageSender();
-//
-//                             if(SenderEmail.equals(msgSender)) {
-//                                 RecieverEmail = msgReciever;    //the actual reciever
-//                             }
-//                             else if(SenderEmail.equals(msgReciever)) {
-//                                 RecieverEmail = msgSender;
-//                             }
-//                         }
-//
-//                         //getting status of user
-//                         getStatus();
-//
-//                         //set onClickListener on imageView to enter text
-//                         SendButtonOnClickListener(id, messages);
-//                     }
-//
-//                     @Override
-//                     public void onError(Throwable e) {
-//                         Snackbar.make(mView, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
-//                         adapter = null;
-//                         recyclerView.setAdapter(null);
-//
-//                         textViewServerProblem.setVisibility(View.VISIBLE);
-//                         loadingIndicator.setVisibility(View.INVISIBLE);
-//
-//                         //cancelling timer so that getPeoples is not called after 15 seconds
-//                         timer.cancel();
-//
-//                     }
-//                 })
-//            );
+    //Firebase methods
+    private void getChat()
+    {
+        FirebaseRecyclerOptions<Chat> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Chat>()
+                .setQuery(chatDatabaseReference.child(key).child(MESSAGES), Chat.class).build();
+        adapter = new FirebaseRecyclerAdapter<Chat, MessageViewHolder>(firebaseRecyclerOptions) {
+            @NonNull
+            @Override
+            public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                View view = getLayoutInflater().inflate(R.layout.list_item_messages, viewGroup, false);
+                return new MessageViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull MessageViewHolder holder, int position, @NonNull Chat model) {
+                loadingIndicator.setVisibility(View.GONE);
+
+                TextView senderMessage =  holder.itemView.findViewById(R.id.tvSenderMessage);
+                TextView senderDate =  holder.itemView.findViewById(R.id.tvSenderDate);
+                TextView recieverMessage =  holder.itemView.findViewById(R.id.tvRecieverMessage);
+                TextView recieverDate =  holder.itemView.findViewById(R.id.tvRecieverDate);
+
+                if(senderEmail.equals(model.getMessageSender()))
+                {
+                    senderMessage.setText(model.getMessage());
+                    senderDate.setText(helperMethods.FormatDateTime(model.getDatetime()));
+                    senderMessage.setVisibility(View.VISIBLE);
+                    senderDate.setVisibility(View.VISIBLE);
+
+                    recieverMessage.setVisibility(View.GONE);
+                    recieverDate.setVisibility(View.GONE);
+                }
+                else
+                {
+                    recieverMessage.setText(model.getMessage());
+                    recieverDate.setText(helperMethods.FormatDateTime(model.getDatetime()));
+                    recieverMessage.setVisibility(View.VISIBLE);
+                    recieverDate.setVisibility(View.VISIBLE);
+
+                    senderMessage.setVisibility(View.GONE);
+                    senderDate.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull DatabaseError error) {
+                super.onError(error);
+                Toasty.error(ChatActivity.this, error.getMessage(), Toast.LENGTH_SHORT, true).show();
+            }
+        };
+        recyclerView.setAdapter(adapter);
+    }
+
+
+    private void getStatus()
+    {
+        valueEventListener = new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(Objects.requireNonNull(dataSnapshot.getValue()).toString().equals("true"))
+                {
+                    actionBar.setSubtitle("Online");
+                }
+                else
+                {
+                    actionBar.setSubtitle("Offline");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toasty.error(ChatActivity.this, "No message to send", Toast.LENGTH_SHORT, true).show();
+            }
+        };
+        userDatabaseReference.child(recieverEmail).child("status").addValueEventListener(valueEventListener);
+        //Todo Add listener
+    }
+
+
+    private void sendMessage()
+    {
+        if(editTextMessage.getText().toString().equals(""))
+        {
+            Toasty.error(ChatActivity.this, "No message to send", Toast.LENGTH_SHORT, true).show();
         }
         else
         {
-            //When coming from detail activity
-//            disposable.add(
-//                    apiService.messagesSR(SenderEmail, reciever)
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribeWith(new DisposableSingleObserver<List<Message>>() {
-//                                @Override
-//                                public void onSuccess(List<Message> messages) {
-//                                    loadingIndicator.setVisibility(View.INVISIBLE);
-//
-//                                    if(messages.size() == 0)
-//                                    {
-//                                        adapter = null;
-//                                        recyclerView.setAdapter(null);
-//
-//                                        actionBar.setSubtitle("0 Messages");
-//                                        textViewNoData.setVisibility(View.VISIBLE);
-//
-//                                    }
-//                                    else
-//                                    {
-//                                        //Only refresh the adapter if data is changed
-//                                        if(itemCount == messages.size())
-//                                        {
-//                                            return;
-//                                        }
-//                                        else
-//                                        {
-//                                            itemCount = messages.size();
-//                                        }
-//
-//                                        Collections.reverse(messages);
-//                                        adapter = new Message_Adapter(messages, SenderEmail, new CustomItemClickListener() {
-//                                            @Override
-//                                            public void onItemClick(View v, int position) {
-//
-//                                            }
-//                                        });
-//                                        recyclerView.setAdapter(adapter);
-//
-//                                        //Setting name and status on actionBar
-//                                        String msgReciever = messages.get(0).getMessageReciever();
-//                                        String msgSender = messages.get(0).getMessageSender();
-//
-//                                        if(SenderEmail.equals(msgSender)) {
-//                                            RecieverEmail = msgReciever;    //the actual reciever
-//                                        }
-//                                        else if(SenderEmail.equals(msgReciever)) {
-//                                            RecieverEmail = msgSender;
-//                                        }
-//
-//                                    }
-//
-//                                    //getting status of user
-//                                    getStatus();
-//
-//                                    editTextMessage.setVisibility(View.GONE);
-//                                    imageView.setVisibility(View.GONE);
-//
-//                                    Toast.makeText(ChatActivity.this, "Please go to ChatActivity Tab to send messages!", Toast.LENGTH_LONG).show();
-//                                }
-//
-//                                @Override
-//                                public void onError(Throwable e) {
-//                                    Snackbar.make(mView, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
-//                                    adapter = null;
-//                                    recyclerView.setAdapter(null);
-//
-//                                    textViewServerProblem.setVisibility(View.VISIBLE);
-//                                    loadingIndicator.setVisibility(View.INVISIBLE);
-//
-//                                    //cancelling timer so that getPeoples is not called after 15 seconds
-//                                    timer.cancel();
-//
-//                                }
-//                            })
-//            );
+            Chat chat = new Chat(senderEmail, recieverEmail, DateTime.now().toString(), editTextMessage.getText().toString());
+            chatDatabaseReference.child(key).child(MESSAGES).push().setValue(chat);
+            //TODO add listener later (indicators for each message)
         }
     }
 
-
-
-
-    private void SendButtonOnClickListener(final int Id, final List<Message> data)
-    {
-        imageView.setOnClickListener(new View.OnClickListener() {
-                                         @Override
-                                         public void onClick(View view) {
-                                             String message = editTextMessage.getText().toString();
-                                             String encodedMessage = null;
-                                             try {
-                                                 encodedMessage = URLEncoder.encode(message, "UTF-8");
-                                             } catch (UnsupportedEncodingException e) {
-                                                 e.printStackTrace();
-                                             }
-                                             if (!message.isEmpty()) {
-                                                 loadingIndicator.setVisibility(View.VISIBLE);
-
-                                                 //Sending Message
-//                    disposable.add(
-//                      apiService.sendMessage(SenderEmail, reciever, encodedMessage, Id)
-//                      .subscribeOn(Schedulers.io())
-//                      .observeOn(AndroidSchedulers.mainThread())
-//                      .subscribeWith(new DisposableCompletableObserver() {
-//                          @Override
-//                          public void onComplete() {
-//                                  Snackbar.make(mView, "Message sent!", Snackbar.LENGTH_SHORT).show();
-//                                  loadingIndicator.setVisibility(View.INVISIBLE);
-//                          }
-//
-//                          @Override
-//                          public void onError(Throwable e) {
-//                              Snackbar.make(mView, "Message not sent, " + e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
-//                              loadingIndicator.setVisibility(View.INVISIBLE);
-//                          }
-//                      })
-//                    );
-//
-//
-//                    Collections.reverse(data);      //to real form
-//                    data.add(new Message(SenderEmail, reciever, message, Id,"Just Now"));
-//                    Collections.reverse(data);      //then reverse again
-//
-//                    TextView textView = findViewById(R.id.textViewNoDataOnDB);
-//                    textView.setVisibility(View.GONE);
-//
-//                    editTextMessage.setText("");
-//
-//                    adapter = new Message_Adapter(data, SenderEmail, null);
-//                    recyclerView.setAdapter(adapter);
-//                }
-//                else
-//                {
-//                    Snackbar.make(mView, "Please write message!", Snackbar.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-                                             }
-                                         }
-                                     });
-    }
-
-
-                                         //Retrofit call
-                                         public void getStatus() {
-                                         }
-                                         //Checking Online Status
-//        disposable.add(
-//                apiService.onlineStatus(reciever)
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribeWith(new DisposableSingleObserver<OnlineStatus>() {
-//                            @Override
-//                            public void onSuccess(OnlineStatus onlineStatus) {
-//                                if(RecieverEmail != null)
-//                                    actionBar.setTitle(RecieverEmail);
-//
-//                                if(onlineStatus.getOnline())
-//                                    actionBar.setSubtitle("Online");
-//                                else if(!onlineStatus.getOnline())
-//                                {
-//                                    actionBar.setSubtitle("Offline");
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                Snackbar.make(mView, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
-//                            }
-//                        })
-//        );
-
-
-}
-//class ends.
+}//class ends.

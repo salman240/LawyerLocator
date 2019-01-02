@@ -268,7 +268,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Setting Dialog Title
             alertDialog.setTitle("Go Back");
 
-            // Setting Dialog Message
+            // Setting Dialog Chat
             alertDialog.setMessage("Address is not detected. Are you sure you want to go back?");
 
             // Setting Icon to Dialog
@@ -288,7 +288,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             });
 
-            // Showing Alert Message
+            // Showing Alert Chat
             alertDialog.show();
         }
 

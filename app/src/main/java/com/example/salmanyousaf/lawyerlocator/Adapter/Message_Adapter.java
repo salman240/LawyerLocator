@@ -67,9 +67,6 @@ public class Message_Adapter extends RecyclerView.Adapter<Message_Adapter.MyView
     }
 
 
-
-
-
     @Override
     public void onBindViewHolder(MyViewHolder holder, int pos) {
 

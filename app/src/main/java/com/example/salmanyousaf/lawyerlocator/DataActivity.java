@@ -3,8 +3,9 @@ package com.example.salmanyousaf.lawyerlocator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -18,36 +19,43 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Signup;
 import com.example.salmanyousaf.lawyerlocator.Utilities.FixAppBarLayoutBehavior;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-
-import butterknife.BindView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.paperdb.Paper;
+
+import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 
 public class DataActivity extends AppCompatActivity{
 
     private TabLayout tabLayout;
     private Utils utils = new Utils(this);
 
-    private String senderEmail = "";
+    private DatabaseReference databaseReference;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
 
         //AppBar hotfix
         AppBarLayout appBarLayout = findViewById(R.id.appbar);
         ((CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams()).setBehavior(new FixAppBarLayoutBehavior());
+
+        //Firebase init
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("User");
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,33 +73,33 @@ public class DataActivity extends AppCompatActivity{
             Snackbar.make(findViewById(android.R.id.content), "You are offline", Snackbar.LENGTH_LONG).show();
         }
 
-//        senderEmail = utils.setStatus();
-        assert senderEmail != null;
-        if(senderEmail.equals(""))
+        //setting status to active
+        if(Paper.book().read("email") != null)
         {
-            Log.e(DataActivity.class.getName(), "Please implement functionality to update status, offline/online!");
+            databaseReference.child(encodeEmail(Paper.book().read("email").toString())).child("status").setValue("true");
+            //Todo Add listener
         }
         else
         {
-//           setStatus("Online");
+            Log.e(DataActivity.class.getName(), "Email not set");
         }
     }
 
 
     @Override
     protected void onDestroy() {
-        senderEmail = utils.setStatus();
-        if(senderEmail != null && senderEmail.equals(""))
+        //setting status to not active
+        if(Paper.book().read("email") != null)
         {
-            Log.e(DataActivity.class.getName(), "Sender Name not Found!");
+            databaseReference.child(encodeEmail(Paper.book().read("email").toString())).child("status").setValue("false");
+            //Todo Add listener
         }
         else
         {
-//            setStatus("Offline");
+            Log.e(DataActivity.class.getName(), "Email not set");
         }
 
         super.onDestroy();
-
     }
 
 
@@ -117,7 +125,7 @@ public class DataActivity extends AppCompatActivity{
             // Setting Dialog Title
             alertDialog.setTitle("Logout");
 
-            // Setting Dialog Message
+            // Setting Dialog Chat
             alertDialog.setMessage("Are you sure you want to logout?");
 
             // Setting Icon to Dialog
@@ -127,22 +135,10 @@ public class DataActivity extends AppCompatActivity{
             // Setting Buttons + and -
             alertDialog.setButton(-1, "Logout", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    //clearing data in Login Shared pref and go to Login Activity
-//                    utils.ClearPreference(lOGIN_PREFERENCE);
-//                    if(senderEmail == null)
-//                    {
-//                        Log.e(DataActivity.class.getName(), "Sender Name not Found!");
-//                    }
-//                    else
-//                    {
-////                        setStatus("Offline");
-//                    }
-
                     Paper.book().destroy();
 
                     Intent intent = new Intent(DataActivity.this, MainActivity.class);
                     startActivity(intent);
-
                     finish();
                 }
             });
@@ -153,7 +149,7 @@ public class DataActivity extends AppCompatActivity{
                 }
             });
 
-            // Showing Alert Message
+            // Showing Alert Chat
             alertDialog.show();
         }
         else if(id == R.id.ProfileInfo)
@@ -194,10 +190,11 @@ public class DataActivity extends AppCompatActivity{
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setupTabIcons() {
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_people_white_24dp);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_chat_white_24dp);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_storage_white_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_people_white_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_chat_white_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_storage_white_24dp);
     }
 
 

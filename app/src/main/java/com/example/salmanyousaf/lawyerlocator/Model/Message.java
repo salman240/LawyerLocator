@@ -3,7 +3,7 @@ package com.example.salmanyousaf.lawyerlocator.Model;
 
 public class Message
 {
-    //Data Model for Message.
+    //Data Model for Chat.
     private int mChatID;
 
     private String mSender;

@@ -24,8 +24,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.decodeEmail;
-
 public class Chat_Adapter extends RecyclerView.Adapter<Chat_Adapter.MyViewHolder> /*implements Filterable*/ {
 
     private List<Chats> mChats;
@@ -71,7 +69,6 @@ public class Chat_Adapter extends RecyclerView.Adapter<Chat_Adapter.MyViewHolder
 
         return mViewHolder;
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int pos) {

@@ -1,33 +1,34 @@
 package com.example.salmanyousaf.lawyerlocator.Model.Firebase;
 
 public class Chat {
-    private String mSender;
-    private String mReciever;
-    private String mDatetime;
+    private String messageSender;
+    private String messageReciever;
+    private String datetime;
+    private String message;
 
     public Chat(){}
 
-    public Chat(String sender, String reciever, String datetime)
+    public Chat(String sender, String reciever, String datetime, String message)
     {
-        mSender = sender;
-        mReciever = reciever;
-        mDatetime = datetime;
+        messageSender = sender;
+        messageReciever = reciever;
+        this.datetime = datetime;
+        this.message = message;
     }
 
-
-    public String getChatSender()
-    {
-        return mSender;
+    public String getMessageSender() {
+        return messageSender;
     }
 
-    public String getChatReciever()
-    {
-        return mReciever;
+    public String getMessageReciever() {
+        return messageReciever;
     }
 
-    public String  getChatDateTime()
-    {
-        return mDatetime;
+    public String getDatetime() {
+        return datetime;
     }
 
+    public String getMessage() {
+        return message;
+    }
 }

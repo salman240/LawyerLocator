@@ -41,7 +41,7 @@ public class Utils {
         // Setting Dialog Title
         alertDialog.setTitle("Quit");
 
-        // Setting Dialog Message
+        // Setting Dialog Chat
         alertDialog.setMessage("Are you sure you want to quit?");
 
         // Setting Icon to Dialog
@@ -61,7 +61,7 @@ public class Utils {
             }
         });
 
-        // Showing Alert Message
+        // Showing Alert Chat
         alertDialog.show();
     }
 
@@ -72,7 +72,7 @@ public class Utils {
         // Setting Dialog Title
         alertDialog.setTitle("Discard");
 
-        // Setting Dialog Message
+        // Setting Dialog Chat
         alertDialog.setMessage("Are you sure you want to discard changes and Quit?");
 
         // Setting Icon to Dialog
@@ -92,7 +92,7 @@ public class Utils {
             }
         });
 
-        // Showing Alert Message
+        // Showing Alert Chat
         alertDialog.show();
     }
 
@@ -103,7 +103,7 @@ public class Utils {
         // Setting Dialog Title
         alertDialog.setTitle("About Us");
 
-        // Setting Dialog Message
+        // Setting Dialog Chat
         alertDialog.setMessage("Developed By:-\n\n\t\t\tSalman Yousaf,\n\t\t\tAsif Saeed\n\nCopyrights 2018");
 
         // Setting Icon to Dialog
@@ -117,7 +117,7 @@ public class Utils {
             }
         });
 
-        // Showing Alert Message
+        // Showing Alert Chat
         alertDialog.show();
     }
 
@@ -129,7 +129,7 @@ public class Utils {
         // Setting Dialog Title
         alertDialog.setTitle("Register");
 
-        // Setting Dialog Message
+        // Setting Dialog Chat
         alertDialog.setMessage("Account Type:");
 
         // Setting Icon to Dialog
@@ -166,7 +166,7 @@ public class Utils {
 
 
 
-        // Showing Alert Message
+        // Showing Alert Chat
         alertDialog.show();
     }
 
