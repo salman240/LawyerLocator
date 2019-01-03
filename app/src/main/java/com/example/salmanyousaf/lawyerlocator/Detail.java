@@ -323,10 +323,10 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 loadingIndicatorSwitch.setVisibility(View.GONE);
-                switchReserve.setVisibility(View.VISIBLE);
 
                 if(dataSnapshot.exists()) {
                     if (Objects.requireNonNull(dataSnapshot.getValue()).equals(true)) {
+                        switchReserve.setVisibility(View.VISIBLE);
                         switchReserve.setChecked(true);
                         waitingTextView.setVisibility(View.GONE);
                     } else {

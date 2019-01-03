@@ -1,40 +1,44 @@
 package com.example.salmanyousaf.lawyerlocator;
 
-        import android.annotation.SuppressLint;
-        import android.content.Intent;
-        import android.content.SharedPreferences;
-        import android.os.Bundle;
-        import android.support.annotation.Nullable;
-        import android.support.v4.app.Fragment;
-        import android.support.v4.view.MenuItemCompat;
-        import android.support.v4.widget.SwipeRefreshLayout;
-        import android.support.v7.widget.DefaultItemAnimator;
-        import android.support.v7.widget.DividerItemDecoration;
-        import android.support.v7.widget.LinearLayoutManager;
-        import android.support.v7.widget.RecyclerView;
-        import android.view.LayoutInflater;
-        import android.view.Menu;
-        import android.view.MenuInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.Button;
-        import android.widget.ProgressBar;
-        import android.widget.RelativeLayout;
-        import android.widget.TextView;
+import android.annotation.SuppressLint;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
-        import com.example.salmanyousaf.lawyerlocator.Adapter.Reserve_Adapter;
+import com.example.salmanyousaf.lawyerlocator.Adapter.ReserveViewHolder;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-        import butterknife.BindView;
-        import butterknife.ButterKnife;
-        import butterknife.Unbinder;
+import java.util.Objects;
 
-        import static com.example.salmanyousaf.lawyerlocator.Contracts.Contracts.SENDEREMAIL;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import es.dmoral.toasty.Toasty;
+import io.paperdb.Paper;
 
+import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 
 public class FragmentReserve extends Fragment {
-
 
     @BindView(R.id.mReserveView)
     RelativeLayout mView;
@@ -60,44 +64,33 @@ public class FragmentReserve extends Fragment {
     @BindView(R.id.buttonRefresh)
     Button button;
 
-
-    Reserve_Adapter adapter;
-    private Utils utils;
-    private String SenderEmail = "";
-    private int Count;
-    private TextView buttonCount;
-
     private Unbinder unbinder;
 
+    private DatabaseReference databaseReference;
+    private FirebaseRecyclerAdapter<String, ReserveViewHolder> adapter;
 
     public FragmentReserve() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        utils = new Utils(getActivity());
     }
-
 
     @Override
     public void onStart() {
         super.onStart();
-        loadingIndicator.setVisibility(View.VISIBLE);
-        AsyncCall();
-
+//        adapter.startListening();
     }
-
 
     @Override
     public void onStop() {
         super.onStop();
+        adapter.stopListening();
     }
-
 
     @Override
     public void onDestroy() {
@@ -105,205 +98,77 @@ public class FragmentReserve extends Fragment {
         super.onDestroy();
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_reserve, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        //Firebase init
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Reserve");
+
+        getReserves();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onRefresh() {
-                AsyncCall();
+                adapter.stopListening();
+                getReserves();
+                adapter.startListening();
                 swipeRefreshLayout.setRefreshing(false);
-                buttonCount.setText(Count + "");
             }
         });
         
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AsyncCall();
+                getReserves();
             }
         });
-
-        SharedPreferences sharedPreferences = utils.GetLoginSharedPreferences();
-        SenderEmail = sharedPreferences.getString(SENDEREMAIL, null);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()), LinearLayoutManager.VERTICAL));
+    }
+
+
+    //Firebase call
+    public void getReserves() {
+        FirebaseRecyclerOptions<String> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<String>()
+                .setQuery(databaseReference.child(encodeEmail(Paper.book().read("email").toString())), String.class).build();
+        adapter = new FirebaseRecyclerAdapter<String, ReserveViewHolder>(firebaseRecyclerOptions) {
+            @NonNull
+            @Override
+            public ReserveViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                View view = getLayoutInflater().inflate(R.layout.list_item_reserve, viewGroup, false);
+                return new ReserveViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull ReserveViewHolder holder, int position, @NonNull String model) {
+                loadingIndicator.setVisibility(View.GONE);
+
+                Toast.makeText(getActivity(), model, Toast.LENGTH_SHORT).show();
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onError(@NonNull DatabaseError error) {
+                super.onError(error);
+                Toasty.error(Objects.requireNonNull(getActivity()), error.getMessage(), Toast.LENGTH_SHORT, true).show();
+            }
+        };
         recyclerView.setAdapter(adapter);
-
-        super.onActivityCreated(savedInstanceState);
     }
-
-
-    /*
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.search_menu,menu);
-
-        MenuItem item = menu.findItem(R.id.search_bar);
-
-        SearchView searchView = (SearchView)item.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                adapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                adapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    */
-
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onCreateOptionsMenu(Menu menu, final MenuInflater inflater) {
-        inflater.inflate(R.menu.reserve, menu);
-
-        MenuItem item = menu.findItem(R.id.notification);
-        MenuItemCompat.setActionView(item, R.layout.notification_menu_layout);
-        RelativeLayout notificationCount = (RelativeLayout) MenuItemCompat.getActionView(item);
-
-        buttonCount = notificationCount.findViewById(R.id.notification_count);
-        buttonCount.setText(Count + "");
-        buttonCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), NotificationActivity.class);
-                intent.putExtra("count", Count);
-                startActivity(intent);
-            }
-        });
-    }
-
-
-
-
-    //Helper methods
-    //Async call maker function
-    public void AsyncCall() {
-        loadingIndicator.setVisibility(View.VISIBLE);
-        textViewNoData.setVisibility(View.GONE);
-        textViewNoDataDetails.setVisibility(View.GONE);
-        textViewNoDataDb.setVisibility(View.GONE);
-        button.setVisibility(View.GONE);
-
-
-//        if (SenderEmail == null) {
-//            getActivity().finish();
-//            Intent intent = new Intent(getActivity(), MainActivity.class);
-//            startActivity(intent);
-//        } else {
-//                                @SuppressLint("SetTextI18n")
-//                                @Override
-//                                public void onSuccess(final List<Reserve> reserves) {
-//                                    loadingIndicator.setVisibility(View.GONE);
-//
-//                                    Count = 0;
-//
-//                                    if (reserves.size() > 0) {
-//                                        //removing the reserve items that the user has to approve or deny in notifications.
-//                                        for (int pos = 0; pos < reserves.size(); pos++) {
-//                                            if (!reserves.get(pos).getIsReserve() && !reserves.get(pos).getResSender().equals(SenderEmail)) {
-//                                                //reserves.remove(pos);
-//                                                Count++;
-//                                            }
-//                                        }
-//
-//                                        try {
-//                                            buttonCount.setText(Count + "");
-//                                        } catch (Exception e) {
-//                                            e.printStackTrace();
-//                                        }
-//
-//                                        adapter = new Reserve_Adapter(reserves, SenderEmail, new CustomItemClickListener() {
-//                                            @Override
-//                                            public void onItemClick(View v, int position) {
-//                                                observeUserData( reserves.get(position).getResId(),
-//                                                          reserves.get(position).getResSender(), reserves.get(position).getResReciever());
-//                                            }
-//                                        });
-//                                        recyclerView.setAdapter(adapter);
-//                                    } else {
-//                                        //clearing the recyclerView in case of empty reserves
-//                                        adapter = null;
-//                                        recyclerView.setAdapter(null);
-//                                        textViewNoDataDb.setVisibility(View.VISIBLE);
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onError(Throwable e) {
-//                                    loadingIndicator.setVisibility(View.GONE);
-//
-//                                    Snackbar.make(mView, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
-//
-//                                    adapter = null;
-//                                    recyclerView.setAdapter(null);
-//
-//                                    textViewNoData.setVisibility(View.VISIBLE);
-//                                    textViewNoDataDetails.setVisibility(View.VISIBLE);
-//                                    new Handler().postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            button.setVisibility(View.VISIBLE);
-//                                        }
-//                                    }, 2000);
-//                                }
-//                            })
-//            );
-//        }
-    }
-
-
-
-//    private void observeUserData(int id, String sender, String reciever) {
-//        loadingIndicator.setVisibility(View.VISIBLE);
-//
-//                            @Override
-//                            public void onSuccess(User user) {
-//                                loadingIndicator.setVisibility(View.GONE);
-//
-//                                Intent intent = new Intent(getActivity(), Detail.class);
-//                                intent.putExtra("Data", user);
-//
-//                                if (user.getCaseType() == null || user.getCaseType().equals("null")) {
-//                                    intent.putExtra("AccountType", "client");
-//                                } else {
-//                                    intent.putExtra("AccountType", "lawyer");
-//                                }
-//                                startActivity(intent);
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                loadingIndicator.setVisibility(View.GONE);
-//
-//                                Snackbar.make(mView, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
-//                            }
-//                        })
-//        );
-//    }
-
 
 }//class ends

@@ -27,10 +27,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:visibility="gone"
+            android:visibility="visible"
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
-            android:indeterminateTint="@color/colorPrimary"/>
+            android:indeterminateTint="@color/colorPrimary"
+            tools:ignore="UnusedAttribute" />
 
 
         <TextView
@@ -44,7 +45,7 @@
             android:layout_gravity="center"
             android:text="No data found!"
             android:visibility="gone"
-            />
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewNoDataDetails"
@@ -56,7 +57,7 @@
             android:layout_marginBottom="20dp"
             android:text="Check Ip Address from menu and try again."
             android:visibility="gone"
-            />
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/buttonRefresh"
@@ -69,7 +70,7 @@
             android:textColor="#fff"
             android:padding="10dp"
             android:visibility="gone"
-            />
+            tools:ignore="HardcodedText" />
 
 
         <TextView
@@ -85,6 +86,6 @@
             android:textColor="@android:color/holo_blue_light"
             android:text="You have no Reserves!"
             android:visibility="gone"
-            />
+            tools:ignore="HardcodedText" />
 
 </RelativeLayout>

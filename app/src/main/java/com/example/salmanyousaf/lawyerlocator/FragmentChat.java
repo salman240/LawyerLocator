@@ -185,3 +185,4 @@ public class FragmentChat extends Fragment {
     }
 
 }//class ends
+

@@ -108,12 +108,17 @@ public class FragmentPeople extends Fragment{
     @Override
     public void onPause() {
         super.onPause();
-        adapter.stopListening();
         if(getRatingValueEventListener != null)
         {
             ratingDatabaseReference.removeEventListener(getRatingValueEventListener);
             getRatingValueEventListener = null;
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
     @Override
