@@ -191,58 +191,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (isEmailTouched && editTextEmail.getError() == null && isPasswordTouched && editTextPassword.getError() == null )
-        {
-            buttonLogin.setVisibility(View.GONE);
-            loadingIndicator.setVisibility(View.VISIBLE);
+        if(utils.isConnectedToInternet()) {
+            if (isEmailTouched && editTextEmail.getError() == null && isPasswordTouched && editTextPassword.getError() == null) {
+                buttonLogin.setVisibility(View.GONE);
+                loadingIndicator.setVisibility(View.VISIBLE);
 
-            userDatabaseReference.child(encodeEmail(editTextEmail.getText().toString()))
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    loadingIndicator.setVisibility(View.GONE);
+                userDatabaseReference.child(encodeEmail(editTextEmail.getText().toString()))
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                loadingIndicator.setVisibility(View.GONE);
 
-                    if (dataSnapshot.exists()) {
-                        Signup signedUser = dataSnapshot.getValue(Signup.class);
+                                if (dataSnapshot.exists()) {
+                                    Signup signedUser = dataSnapshot.getValue(Signup.class);
 
-                        if(Objects.requireNonNull(signedUser).getPassword().equals(editTextPassword.getText().toString())) {
-                            Toasty.success(MainActivity.this, "Sign in Successfull", Toast.LENGTH_SHORT, true).show();
+                                    if (Objects.requireNonNull(signedUser).getPassword().equals(editTextPassword.getText().toString())) {
+                                        Toasty.success(MainActivity.this, "Sign in Successfull", Toast.LENGTH_SHORT, true).show();
 
-                            signedUser.setEmail(editTextEmail.getText().toString());
-                            Paper.book().write("email", editTextEmail.getText().toString());
-                            Paper.book().write("user", signedUser);
-                            Paper.book().write("accountType", signedUser.getAccountType());
+                                        signedUser.setEmail(editTextEmail.getText().toString());
+                                        Paper.book().write("email", editTextEmail.getText().toString());
+                                        Paper.book().write("user", signedUser);
+                                        Paper.book().write("accountType", signedUser.getAccountType());
 
-                            if (rememberMe.isChecked()) {
-                                Paper.book().write("rememberMe", true);
-                            } else {
-                                Paper.book().write("rememberMe", false);
+                                        if (rememberMe.isChecked()) {
+                                            Paper.book().write("rememberMe", true);
+                                        } else {
+                                            Paper.book().write("rememberMe", false);
+                                        }
+
+                                        Intent intent = new Intent(MainActivity.this, DataActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                } else {
+                                    Toasty.warning(MainActivity.this, "No such user exists", Toast.LENGTH_SHORT, true).show();
+                                    buttonLogin.setVisibility(View.VISIBLE);
+                                }
                             }
 
-                            Intent intent = new Intent(MainActivity.this, DataActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    } else {
-                        Toasty.warning(MainActivity.this, "No such user exists", Toast.LENGTH_SHORT, true).show();
-                        buttonLogin.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    loadingIndicator.setVisibility(View.GONE);
-                    buttonLogin.setVisibility(View.VISIBLE);
-                    Toasty.error(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG, true).show();
-                }
-            });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                loadingIndicator.setVisibility(View.GONE);
+                                buttonLogin.setVisibility(View.VISIBLE);
+                                Toasty.error(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG, true).show();
+                            }
+                        });
+            } else {
+                Snackbar.make(mView, "Please provide required details", Snackbar.LENGTH_LONG).show();
+            }
         }
         else
         {
-            Snackbar.make(mView, "Please provide required details", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mView, "No internet connection", Snackbar.LENGTH_SHORT).show();
         }
-
     }
 
     @Override

@@ -1,8 +1,11 @@
 package com.example.salmanyousaf.lawyerlocator.Model.Firebase;
 
 
+import android.support.annotation.Keep;
+
 import java.util.List;
 
+@Keep
 public class Chats
 {
     private String chatSender;

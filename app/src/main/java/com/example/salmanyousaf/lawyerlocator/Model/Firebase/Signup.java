@@ -1,7 +1,10 @@
 package com.example.salmanyousaf.lawyerlocator.Model.Firebase;
 
+import android.support.annotation.Keep;
+
 import java.io.Serializable;
 
+@Keep
 public class Signup implements Serializable {
     //private global fields/variables
     private String email;

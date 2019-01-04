@@ -136,6 +136,7 @@ public class DataActivity extends AppCompatActivity{
             alertDialog.setButton(-1, "Logout", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     Paper.book().destroy();
+                    Paper.book().write("isFirstTime", false);
 
                     Intent intent = new Intent(DataActivity.this, MainActivity.class);
                     startActivity(intent);
