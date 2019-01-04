@@ -35,7 +35,6 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolBar"
-                app:title="Email"
                 app:titleTextColor="@color/button_text_color"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"

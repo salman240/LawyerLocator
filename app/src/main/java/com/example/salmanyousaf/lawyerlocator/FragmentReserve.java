@@ -1,6 +1,7 @@
 package com.example.salmanyousaf.lawyerlocator;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,21 +13,28 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.salmanyousaf.lawyerlocator.Adapter.ReserveViewHolder;
+import com.example.salmanyousaf.lawyerlocator.Interfaces.CustomItemClickListener;
+import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Signup;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -36,6 +44,7 @@ import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import io.paperdb.Paper;
 
+import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.decodeEmail;
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 
 public class FragmentReserve extends Fragment {
@@ -68,6 +77,7 @@ public class FragmentReserve extends Fragment {
 
     private DatabaseReference databaseReference;
     private FirebaseRecyclerAdapter<String, ReserveViewHolder> adapter;
+    private DatabaseReference userDatabaseReference;
 
     public FragmentReserve() {
         // Required empty public constructor
@@ -83,7 +93,7 @@ public class FragmentReserve extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//        adapter.startListening();
+        adapter.startListening();
     }
 
     @Override
@@ -114,6 +124,7 @@ public class FragmentReserve extends Fragment {
         //Firebase init
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Reserve");
+        userDatabaseReference = firebaseDatabase.getReference("User");
 
         getReserves();
 
@@ -155,10 +166,41 @@ public class FragmentReserve extends Fragment {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull ReserveViewHolder holder, int position, @NonNull String model) {
+            protected void onBindViewHolder(@NonNull final ReserveViewHolder holder, int position, @NonNull final String model) {
                 loadingIndicator.setVisibility(View.GONE);
 
-                Toast.makeText(getActivity(), model, Toast.LENGTH_SHORT).show();
+                final TextView name =  holder.itemView.findViewById(R.id.name_text_view);
+                final ImageView image_view = holder.itemView.findViewById(R.id.image_view);
+                final TextView email = holder.itemView.findViewById(R.id.email_text_view);
+
+                userDatabaseReference.child(model).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        final Signup signup = dataSnapshot.getValue(Signup.class);
+                        if (signup != null)
+                        {
+                            name.setText(signup.getName());
+                            email.setText(decodeEmail(model));
+                            Picasso.get().load(signup.getProfileImage()).
+                                    placeholder(R.drawable.placeholder_image).error(R.drawable.no_image).fit().into(image_view);
+
+                            holder.setItemClickListener(new CustomItemClickListener() {
+                                @Override
+                                public void onItemClick(View v, int position) {
+                                    Intent intent = new Intent(getActivity(), Detail.class);
+                                    intent.putExtra("emailFromRes", model);
+                                    intent.putExtra("AccountType", signup.getAccountType());
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(getClass().getSimpleName(), databaseError.getMessage());
+                    }
+                });
             }
 
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)

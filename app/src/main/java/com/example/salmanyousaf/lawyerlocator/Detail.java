@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -53,6 +54,7 @@ import es.dmoral.toasty.Toasty;
 import io.paperdb.Paper;
 
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
+import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.getUsers;
 
 public class Detail extends AppCompatActivity implements RatingDialogListener, View.OnClickListener {
 
@@ -135,13 +137,14 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     private DatabaseReference chatDatabaseReference;
 
     private ValueEventListener getRatingValueEventListener;
-    private ValueEventListener getReserveEventValueListener;
 
     private Signup data;
     private float userRating;
     private float ratingToShow = 0;
     private boolean isChatOpened;
     private String key;
+    private boolean isUserReserved;
+    private String account;
 
     @SuppressLint("NewApi")
     @Override
@@ -155,19 +158,52 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         ratingDatabaseReference = firebaseDatabase.getReference("Rating");
         reserveDatabaseReference = firebaseDatabase.getReference("Reserve");
         chatDatabaseReference = firebaseDatabase.getReference("Chat");
+        DatabaseReference userDatabaseReference = firebaseDatabase.getReference("User");
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        //getting intent from listView clicks in Search Activity.
+        //getting intent from Fragment
         Intent intent = getIntent();
-        String Account = intent.getStringExtra("AccountType");
-        data = (Signup) intent.getSerializableExtra("Data");
-
-        reciverEmail = encodeEmail(data.getEmail());
         senderEmail = encodeEmail(Paper.book().read("email").toString());
 
-        if(Account.equals("lawyer"))
+        if(intent.getSerializableExtra("Data") != null) {   //FragmentPeople
+            data = (Signup) intent.getSerializableExtra("Data");
+            reciverEmail = encodeEmail(data.getEmail());
+            account = intent.getStringExtra("AccountType");
+            initActivity();
+        }
+        else    //FragmentReserve
+        {
+            reciverEmail = intent.getStringExtra("emailFromRes");
+            account = getUsers(intent.getStringExtra("AccountType"));
+            userDatabaseReference.child(reciverEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Signup signup = dataSnapshot.getValue(Signup.class);
+                    if(signup != null)
+                    {
+                        data = signup;
+                        data.setEmail(reciverEmail);
+                        initActivity();
+                    }
+                    else
+                    {
+                        Snackbar.make(mView, "Error : " + "Problem occurs at server side", Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(getClass().getSimpleName(), databaseError.getMessage());
+                }
+            });
+        }
+
+    }//onCreate
+
+    private void initActivity() {
+        if(account.equals("lawyer"))
         {
             SetProfileImage(data.getProfileImage());
             toolbarEmail.setTitle(data.getEmail());
@@ -181,7 +217,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
             layoutExp.setVisibility(View.GONE);
             layoutRating.setVisibility(View.GONE);
         }
-        else if(Account.equals("client"))
+        else if(account.equals("client"))
         {
             SetProfileImage(data.getProfileImage());
             toolbarEmail.setTitle(data.getEmail());
@@ -204,7 +240,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         appBarLayout.setOnClickListener(this);
 
         getIsReserve();
-    }//onCreate
+    }
 
     @SuppressLint("IntentReset")
     @Override
@@ -253,12 +289,6 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
             ratingDatabaseReference.child(reciverEmail).removeEventListener(getRatingValueEventListener);
             getRatingValueEventListener = null;
             ratingDatabaseReference = null;
-        }
-
-        if(getReserveEventValueListener != null) {
-            reserveDatabaseReference.child(reciverEmail).child(senderEmail).removeEventListener(getReserveEventValueListener);
-            getReserveEventValueListener = null;
-            reserveDatabaseReference = null;
         }
     }
 
@@ -318,20 +348,23 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     private void getIsReserve() {
         setOnReserveClickListener();
 
-        getReserveEventValueListener = new ValueEventListener() {
+        reserveDatabaseReference.child(senderEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 loadingIndicatorSwitch.setVisibility(View.GONE);
 
                 if(dataSnapshot.exists()) {
-                    if (Objects.requireNonNull(dataSnapshot.getValue()).equals(true)) {
+                    for(DataSnapshot reserve : dataSnapshot.getChildren()) {
+                        if (Objects.requireNonNull(reserve.getValue()).equals(reciverEmail)) {
+                            isUserReserved = true;
+                        }
+                    }
+
+                    if(isUserReserved) {
                         switchReserve.setVisibility(View.VISIBLE);
                         switchReserve.setChecked(true);
-                        waitingTextView.setVisibility(View.GONE);
-                    } else {
-                        waitingTextView.setVisibility(View.VISIBLE);
-                        switchReserve.setVisibility(View.GONE);
+                        isUserReserved = false;
                     }
                 }
             }
@@ -341,17 +374,15 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
                 Snackbar.make(mView, "Error : " + databaseError.getMessage(), Snackbar.LENGTH_SHORT).show();
                 loadingIndicatorSwitch.setVisibility(View.GONE);
             }
-        };
-        reserveDatabaseReference.child(reciverEmail).child(senderEmail).addValueEventListener(getReserveEventValueListener);
+        });
     }
 
     private void reserveUser() {
-        reserveDatabaseReference.child(reciverEmail).child(senderEmail).setValue(false).addOnSuccessListener(new OnSuccessListener<Void>() {
+        reserveDatabaseReference.child(senderEmail).push().setValue(reciverEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Snackbar.make(mView, "Waiting for approval!", Snackbar.LENGTH_SHORT).show();
-                waitingTextView.setVisibility(View.VISIBLE);
-                switchReserve.setVisibility(View.GONE);
+                Snackbar.make(mView, "User is saved!", Snackbar.LENGTH_SHORT).show();
+                switchReserve.setChecked(true);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -362,15 +393,24 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     }
 
     private void deleteReserve() {
-        reserveDatabaseReference.child(reciverEmail).child(senderEmail).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        reserveDatabaseReference.child(senderEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
-            public void onSuccess(Void aVoid) {
-                Snackbar.make(mView, "User is un-reserved Successfully!", Snackbar.LENGTH_SHORT).show();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    for(DataSnapshot reserve : dataSnapshot.getChildren()) {
+                        if (Objects.requireNonNull(reserve.getValue()).equals(reciverEmail)) {
+                            reserve.getRef().removeValue();
+                            switchReserve.setChecked(false);
+                        }
+                    }
+                }
             }
-        }).addOnFailureListener(new OnFailureListener() {
+
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Snackbar.make(mView, e.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Snackbar.make(mView, "Error : " + databaseError.getMessage(), Snackbar.LENGTH_SHORT).show();
+                loadingIndicatorSwitch.setVisibility(View.GONE);
             }
         });
     }

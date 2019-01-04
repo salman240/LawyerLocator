@@ -40,8 +40,8 @@ public class Reserve_Adapter extends RecyclerView.Adapter<Reserve_Adapter.MyView
 
             name = view.findViewById(R.id.name_text_view);
             date = view.findViewById(R.id.date_text_view);
-            youResHim = view.findViewById(R.id.you_res_text_view);
-            heResYou = view.findViewById(R.id.he_res_text_view);
+//            youResHim = view.findViewById(R.id.you_res_text_view);
+//            heResYou = view.findViewById(R.id.he_res_text_view);
         }
     }
 
