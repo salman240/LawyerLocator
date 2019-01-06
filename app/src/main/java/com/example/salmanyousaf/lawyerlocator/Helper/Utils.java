@@ -21,13 +21,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.salmanyousaf.lawyerlocator.Contracts.Contracts.SENDEREMAIL;
-import static com.example.salmanyousaf.lawyerlocator.Contracts.Contracts.lOGIN_PREFERENCE;
 
 public class Utils {
 
     private Context mContext;
-    private SharedPreferences sharedPreferences;
 
     public Utils(Context context)
     {
@@ -45,7 +42,7 @@ public class Utils {
         alertDialog.setMessage("Are you sure you want to quit?");
 
         // Setting Icon to Dialog
-        alertDialog.setIcon(R.drawable.ic_exit_to_app_black_24dp);
+        alertDialog.setIcon(R.drawable.ic_exit_to_app_green_24dp);
 
 
         // Setting Buttons + and -
@@ -76,7 +73,7 @@ public class Utils {
         alertDialog.setMessage("Are you sure you want to discard changes and Quit?");
 
         // Setting Icon to Dialog
-        alertDialog.setIcon(R.drawable.ic_exit_to_app_black_24dp);
+        alertDialog.setIcon(R.drawable.ic_exit_to_app_green_24dp);
 
 
         // Setting Buttons + and -
@@ -107,7 +104,7 @@ public class Utils {
         alertDialog.setMessage("Developed By:-\n\n\t\t\tSalman Yousaf,\n\t\t\tAsif Saeed\n\nCopyrights 2018");
 
         // Setting Icon to Dialog
-        alertDialog.setIcon(R.drawable.ic_info_black_24dp);
+        alertDialog.setIcon(R.drawable.ic_info_green_24dp);
 
 
         // Setting OK Button
@@ -133,7 +130,7 @@ public class Utils {
         alertDialog.setMessage("Account Type:");
 
         // Setting Icon to Dialog
-        alertDialog.setIcon(R.drawable.ic_people_black_24dp);
+        alertDialog.setIcon(R.drawable.ic_people_green_24dp);
 
 
         // Setting Cancel Button
@@ -208,19 +205,6 @@ public class Utils {
         assert connMgr != null;
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return networkInfo != null;
-    }
-
-    //It gets the status string in Login SharedPreferences
-    public String setStatus() {
-        sharedPreferences = GetLoginSharedPreferences();
-
-        return sharedPreferences.getString(SENDEREMAIL, null);
-    }
-
-    //It is used to get the values from Login SharedPreferences
-    public SharedPreferences GetLoginSharedPreferences()
-    {
-        return sharedPreferences = mContext.getSharedPreferences(lOGIN_PREFERENCE, MODE_PRIVATE);
     }
 
     //It checks whether the email matches with custom defined format and then return status as true or false.

@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.Objects;
 
@@ -44,10 +45,10 @@ import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.isPasswordVali
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.editTextEmail)
-    EditText editTextEmail;
+    MaterialEditText editTextEmail;
 
     @BindView(R.id.editTextPassword)
-    EditText editTextPassword;
+    MaterialEditText editTextPassword;
 
     @BindView(R.id.buttonLogin)
     Button buttonLogin;
@@ -297,8 +298,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        unbinder.unbind();
         super.onDestroy();
+        unbinder.unbind();
     }
 
 }//class ends.

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -24,6 +25,7 @@ public class Startup extends Application {
         Paper.init(this);
 
         //allow firebase to store data locally so that it will be avl offline also
+        FirebaseApp.initializeApp(this);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         //initializing joda time external library

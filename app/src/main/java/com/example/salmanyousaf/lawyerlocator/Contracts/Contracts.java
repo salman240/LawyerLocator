@@ -6,10 +6,6 @@ package com.example.salmanyousaf.lawyerlocator.Contracts;
 
 public class Contracts
 {
-
-    //Login shared Preference
-    public static final String lOGIN_PREFERENCE = "loginPreference";
-
     //Login Shared Preference keys
     public static final String SENDEREMAIL = "senderEmail";
     public static final String PASSWORD = "password";
@@ -21,22 +17,10 @@ public class Contracts
     public static final String PHONE = "phone";
 
 
-    //IP Address Shared Preference
-    public static final String IP_ADDRESS__PREFERENCE = "ipAdressPreference";
-
-    //IP Address Shared Preference key
-    public static final String IP_ADDRESS = "ipAddress";
-
-
     //Night Theme Shared Preference keys
     public static final String NIGHT__PREFERENCE = "nightPreference";
 
     //Night Theme Shared Preference key
     public static final String IS_NIGHT = "isNight";
-
-
-    //QueryUtils Timeouts
-    public static final int READ_TIMEOUT = 5000;
-    public static final int CONNECT_TIMEOUT = 10000;
 
 }//class ends.

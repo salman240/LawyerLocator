@@ -128,7 +128,7 @@ public class DataActivity extends AppCompatActivity{
             alertDialog.setMessage("Are you sure you want to logout?");
 
             // Setting Icon to Dialog
-            alertDialog.setIcon(R.drawable.ic_exit_to_app_black_24dp);
+            alertDialog.setIcon(R.drawable.ic_exit_to_app_green_24dp);
 
 
             // Setting Buttons + and -

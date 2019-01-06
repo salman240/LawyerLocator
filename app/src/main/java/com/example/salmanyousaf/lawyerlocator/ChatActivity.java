@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,7 +62,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     TextView textViewServerProblem;
 
     @BindView(R.id.EditTextMessage)
-    EditText editTextMessage;
+    TextInputEditText editTextMessage;
 
     @BindView(R.id.imageView)
     ImageView imageView;

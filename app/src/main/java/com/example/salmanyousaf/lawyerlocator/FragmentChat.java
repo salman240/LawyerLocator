@@ -87,8 +87,8 @@ public class FragmentChat extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         if(valueEventListener != null)
         {
             databaseReference.removeEventListener(valueEventListener);

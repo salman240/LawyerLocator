@@ -1,10 +1,8 @@
 package com.example.salmanyousaf.lawyerlocator;
 
-import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,17 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.salmanyousaf.lawyerlocator.Adapter.Notification_Adapter;
-import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
-import com.example.salmanyousaf.lawyerlocator.Model.Reserve;
-
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import static com.example.salmanyousaf.lawyerlocator.Contracts.Contracts.SENDEREMAIL;
 
 public class NotificationActivity extends AppCompatActivity {
 
@@ -49,12 +39,6 @@ public class NotificationActivity extends AppCompatActivity {
     @BindView(R.id.loading_indicator)
     ProgressBar loadingIndicator;
 
-    private String SenderEmail;
-    private Notification_Adapter adapter;
-    private Utils utils= new Utils(this);
-
-    int reservesSize;
-
     private Unbinder unbinder;
 
     @Override
@@ -63,9 +47,6 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         unbinder = ButterKnife.bind(this);
 
-
-        SharedPreferences sharedPreferences = utils.GetLoginSharedPreferences();
-        SenderEmail = sharedPreferences.getString(SENDEREMAIL, null);
 
         loadingIndicator.setVisibility(View.VISIBLE);
 
@@ -82,7 +63,7 @@ public class NotificationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(adapter);
+//        recyclerView.setAdapter(adapter);
 
         AsyncCall();
     }

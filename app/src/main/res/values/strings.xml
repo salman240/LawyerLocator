@@ -1,14 +1,4 @@
 <resources>
-
-    <string-array name="search_bar">
-        <item>Azam</item>
-        <item>Asif</item>
-        <item>Salman</item>
-        <item>Usman</item>
-        <item>Bilal</item>
-    </string-array>
-
-
     <string name="app_name">Lawyer Locator</string>
 
 

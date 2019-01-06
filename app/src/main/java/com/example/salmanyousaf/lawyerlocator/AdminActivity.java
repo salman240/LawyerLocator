@@ -3,13 +3,11 @@ package com.example.salmanyousaf.lawyerlocator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
 
 import java.util.Objects;
 
@@ -32,7 +30,6 @@ public class AdminActivity extends AppCompatActivity {
 
         webView.getSettings().setJavaScriptEnabled(true);
 
-        Utils utils = new Utils(this);
 
 //        String ip = utils.getIp();
 
@@ -45,7 +42,6 @@ public class AdminActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        //Toast.makeText(this, "Logging Out!", Toast.LENGTH_SHORT).show();
         finish();
         super.onBackPressed();
     }
