@@ -6,7 +6,6 @@
     android:id="@+id/signupRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
     tools:context="com.example.salmanyousaf.lawyerlocator.SignupActivity">
 
     <RelativeLayout
@@ -162,6 +161,7 @@
             android:layout_alignParentRight="true"
             android:padding="16dp"
             android:layout_margin="16dp"
+            android:textColor="@android:color/black"
             android:background="@drawable/spinner_button"
             android:onClick="Map"/>
 
@@ -192,6 +192,7 @@
             android:layout_alignParentRight="true"
             android:textAlignment="center"
             android:padding="16dp"
+            android:textColor="@android:color/black"
             android:layout_margin="16dp"
             android:layout_below="@+id/buttonMap"
             android:entries="@array/cities_gender"
@@ -210,6 +211,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:padding="16dp"
+            android:textColor="@android:color/black"
             android:layout_margin="16dp"
             android:layout_below="@id/textViewGender"
             android:text="@string/select"

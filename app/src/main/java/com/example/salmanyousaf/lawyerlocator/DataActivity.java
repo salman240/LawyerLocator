@@ -19,7 +19,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Signup;
@@ -81,7 +80,7 @@ public class DataActivity extends AppCompatActivity{
         }
         else
         {
-            Log.e(DataActivity.class.getName(), "Email not set");
+            Log.w(DataActivity.class.getName(), "Email not set");
         }
     }
 
@@ -96,7 +95,7 @@ public class DataActivity extends AppCompatActivity{
         }
         else
         {
-            Log.e(DataActivity.class.getName(), "Email not set");
+            Log.w(DataActivity.class.getName(), "Email not set");
         }
 
         super.onDestroy();
@@ -135,6 +134,8 @@ public class DataActivity extends AppCompatActivity{
             // Setting Buttons + and -
             alertDialog.setButton(-1, "Logout", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
+                    databaseReference.child(encodeEmail(Paper.book().read("email").toString())).child("status").setValue("false");
+
                     Paper.book().destroy();
                     Paper.book().write("isFirstTime", false);
 

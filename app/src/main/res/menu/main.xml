@@ -5,15 +5,15 @@
 
     <item
         android:id="@+id/register"
-        android:title="Register"
+        android:title="@string/register"
         app:showAsAction="always"/>
 
 
     <item
         android:id="@+id/setting"
-        android:title="Settings"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_settings_white_24dp"/>
+        android:title="@string/night_mode"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_night_white_24dp"/>
 
     <item
         android:id="@+id/aboutUs"

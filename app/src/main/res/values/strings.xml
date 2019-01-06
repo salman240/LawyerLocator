@@ -124,5 +124,8 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="loading">Loading...</string>
+    <string name="logout">Logout</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="register">Register</string>
 
 </resources>

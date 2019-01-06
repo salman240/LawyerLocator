@@ -2,13 +2,13 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorForeground">@android:color/black</item>
+        <!--<item name="colorPrimary">#f1f1f1</item>
+        <item name="colorPrimaryDark">#f5f5f5</item>
+        <item name="colorAccent">#fff</item>-->
+        <!--<item name="android:colorForeground">@android:color/black</item>
         <item name="android:textColorPrimary">@color/colorAccent</item>
         <item name="android:colorBackground">@color/button_text_color</item>
-        <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorPrimaryDark</item>-->
     </style>
 
 
@@ -22,13 +22,13 @@
         <item name="met_errorColor">@color/redNight</item>
         <item name="met_floatingLabel">highlight</item>
         <item name="met_floatingLabelAnimating">true</item>
-        <item name="met_baseColor">@color/colorPrimary</item>
-        <item name="met_primaryColor">@color/colorPrimary</item>
-        <item name="met_textColor">@color/colorPrimary</item>
+        <item name="met_baseColor">@color/textColorButton</item>
+        <item name="met_primaryColor">@color/textColorButton</item>
+        <item name="met_textColor">@color/textColorButton</item>
         <item name="met_floatingLabelTextSize">16sp</item>
         <item name="met_floatingLabelAlwaysShown">true</item>
         <item name="met_clearButton">true</item>
-        <item name="met_helperTextColor">@color/colorPrimaryDark</item>
+        <item name="met_helperTextColor">@color/textColorButton</item>
     </style>
 
 
@@ -76,7 +76,7 @@
         <item name="android:layout_margin">16dp</item>
         <item name="android:padding">16dp</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/textColorButton</item>
         <item name="android:fontFamily" tools:ignore="NewApi">sans-serif-condensed</item>
     </style>
 

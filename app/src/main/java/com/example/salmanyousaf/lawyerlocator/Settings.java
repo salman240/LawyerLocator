@@ -2,18 +2,17 @@ package com.example.salmanyousaf.lawyerlocator;
 
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import java.util.Objects;
 
-import static android.support.v7.app.AppCompatDelegate.setDefaultNightMode;
 import static com.example.salmanyousaf.lawyerlocator.Contracts.Contracts.IS_NIGHT;
 import static com.example.salmanyousaf.lawyerlocator.Contracts.Contracts.NIGHT__PREFERENCE;
 
@@ -26,12 +25,12 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Night Mode");
 
         final Switch switchSetting = findViewById(R.id.switchSettings);
 
-        //if(GetNightMode()!= null)
-        /*switchSetting.setChecked(GetNightMode());
+        if(GetNightMode() != null)
+            switchSetting.setChecked(GetNightMode());
 
         switchSetting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,14 +39,14 @@ public class Settings extends AppCompatActivity {
                 {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     SaveNightMode(true);
-                    Toast.makeText(Settings.this, "Activating Night Theme", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Activating Night Theme", Snackbar.LENGTH_SHORT).show();
                     ExitActivityWithDelay();
                 }
                 else
                 {
-                    setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     SaveNightMode(false);
-                    Toast.makeText(Settings.this, "Deactivating Night Theme", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Deactivating Night Theme", Snackbar.LENGTH_SHORT).show();
                     ExitActivityWithDelay();
                 }
             }
@@ -79,9 +78,11 @@ public class Settings extends AppCompatActivity {
             @Override
             public void run() {
                 finish();
+//                overridePendingTransition(0, 0);
+//                startActivity(getIntent());
+//                overridePendingTransition(0, 0);
             }
-        },1000);
-    */
+        },500);
     }
 
 }//class ends here

@@ -13,14 +13,14 @@
         android:id="@+id/login"
         android:title="@string/login"
         android:orderInCategory="2"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/setting"
-        android:title="Settings"
+        android:title="@string/night_mode"
         android:orderInCategory="3"
         app:showAsAction="always"
-        android:icon="@drawable/ic_settings_white_24dp"/>
+        android:icon="@drawable/ic_night_white_24dp"/>
 
 
 </menu>
