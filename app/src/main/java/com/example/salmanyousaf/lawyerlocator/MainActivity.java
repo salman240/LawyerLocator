@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     Signup signedUser = dataSnapshot.getValue(Signup.class);
 
                                     if (Objects.requireNonNull(signedUser).getPassword().equals(editTextPassword.getText().toString())) {
-                                        Toasty.success(MainActivity.this, "Sign in Successfull", Toast.LENGTH_SHORT, true).show();
+//                                        Toasty.success(MainActivity.this, "Sign in Successfull", Toast.LENGTH_SHORT, true).show();
 
                                         signedUser.setEmail(editTextEmail.getText().toString());
                                         Paper.book().write("email", editTextEmail.getText().toString());

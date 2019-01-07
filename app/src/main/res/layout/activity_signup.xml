@@ -192,12 +192,11 @@
             android:layout_alignParentRight="true"
             android:textAlignment="center"
             android:padding="16dp"
-            android:textColor="@android:color/black"
             android:layout_margin="16dp"
             android:layout_below="@+id/buttonMap"
             android:entries="@array/cities_gender"
-            android:background="@drawable/spinner_button"
-            android:prompt="@string/Prompt_Gender"/>
+            android:prompt="@string/Prompt_Gender"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/textViewProfile"

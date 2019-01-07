@@ -53,6 +53,7 @@ import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import io.paperdb.Paper;
 
+import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.decodeEmail;
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.getUsers;
 
@@ -184,7 +185,7 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
                     if(signup != null)
                     {
                         data = signup;
-                        data.setEmail(reciverEmail);
+                        data.setEmail(decodeEmail(reciverEmail));
                         initActivity();
                     }
                     else

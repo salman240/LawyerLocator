@@ -40,4 +40,20 @@ public class Chats
     public String getmDate() {
         return mDate;
     }
+
+    public void setChatSender(String chatSender) {
+        this.chatSender = chatSender;
+    }
+
+    public void setChatReciever(String chatReciever) {
+        this.chatReciever = chatReciever;
+    }
+
+    public void setmChats(List<Chat> mChats) {
+        this.mChats = mChats;
+    }
+
+    public void setmDate(String mDate) {
+        this.mDate = mDate;
+    }
 }//class ends

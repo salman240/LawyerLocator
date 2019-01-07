@@ -2,10 +2,14 @@ package com.example.salmanyousaf.lawyerlocator;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
@@ -13,11 +17,11 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -39,9 +43,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.joda.time.DateTime;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -58,28 +65,28 @@ import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.isPasswordVali
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.editTextEmail)
-    EditText editTextEmail;
+    MaterialEditText editTextEmail;
 
     @BindView(R.id.editTextPassword)
-    EditText editTextPassword;
+    MaterialEditText editTextPassword;
 
     @BindView(R.id.editTextName)
-    EditText editTextName;
+    MaterialEditText editTextName;
 
     @BindView(R.id.editTextPhoneNo)
-    EditText editTextPhone;
+    MaterialEditText editTextPhone;
 
     @BindView(R.id.editTextCaseType)
-    EditText editTextCaseType;
+    MaterialEditText editTextCaseType;
 
     @BindView(R.id.editTextExperience)
-    EditText editTextExperience;
+    MaterialEditText editTextExperience;
 
     @BindView(R.id.editTextDescription)
-    EditText editTextDescription;
+    MaterialEditText editTextDescription;
 
     @BindView(R.id.editTextCost)
-    EditText editTextFee;
+    MaterialEditText editTextFee;
 
     @BindView(R.id.buttonMap)
     Button buttonLocation;
@@ -522,6 +529,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK)
@@ -530,7 +538,17 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             if(requestCode == SELECT_FILE)
             {
                 profileImageUri = data.getData();
-                imageView.setImageURI(profileImageUri);
+                Bitmap bitmap = null;
+
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), profileImageUri);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 250, 250, true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                compressBitmap(bitmap);
+                imageView.setImageBitmap(bitmap);
                 imageView.setVisibility(View.VISIBLE);
             }
             else if(requestCode == Map_Address)
@@ -615,6 +633,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 progressDialog.setMessage("Image Uploaded...");
+                deleteBitmap();
 
                 imageStorageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -627,6 +646,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     public void onFailure(@NonNull Exception e) {
                         Toasty.warning(SignupActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG, true).show();
                         progressDialog.dismiss();
+                        loadingIndicatorButton.setVisibility(View.GONE);
+                        buttonSignup.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -641,6 +662,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             public void onFailure(@NonNull Exception e) {
                 Toasty.warning(SignupActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG, true).show();
                 progressDialog.dismiss();
+                loadingIndicatorButton.setVisibility(View.GONE);
+                buttonSignup.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -678,6 +701,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             public void onFailure(@NonNull Exception e) {
                 Toasty.error(SignupActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG, true).show();
                 progressDialog.dismiss();
+                loadingIndicatorButton.setVisibility(View.GONE);
+                buttonSignup.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -734,6 +759,52 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         else if(accountType.equals("lawyer"))
         {
             editTextExperience.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void compressBitmap(Bitmap bitmap) {
+        String path = MediaStore.Images.Media.insertImage(SignupActivity.this.getContentResolver(), bitmap, "Image",
+                null);
+
+        profileImageUri = Uri.parse(path);
+    }
+
+    public static String getRealPathFromUri(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    private void deleteBitmap()
+    {
+        //deleting the new generated bitmap
+        File file = new File( getRealPathFromUri( SignupActivity.this, profileImageUri ));
+        boolean deleted = file.delete();
+        if(!deleted) {
+            boolean deleted2 = false;
+            try {
+                deleted2 = file.getCanonicalFile().delete();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            boolean deleted3 = false;
+            if (!deleted2) {
+                deleted3 = getApplicationContext().deleteFile(file.getName());
+            }
+
+            if (!deleted & !deleted2 & !deleted3) {
+                Log.e(getLocalClassName(), "Cannot delete new generated bitmap");
+            }
         }
     }
 

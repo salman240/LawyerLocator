@@ -29,8 +29,8 @@ public class ShowImageActivity extends AppCompatActivity {
         if(getIntent().getStringExtra("image") != null)
         {
             ImageView imageView = findViewById(R.id.image_view);
-            Picasso.get().load(getIntent().getStringExtra("image")).placeholder(R.drawable.placeholder_image).error(R.drawable.no_image)
-                    .fit().into(imageView);
+            Picasso.get().load(getIntent().getStringExtra("image")).placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.no_image).into(imageView);
         }
 
     }

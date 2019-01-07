@@ -51,12 +51,6 @@ public class FragmentChat extends Fragment {
     @BindView(R.id.textViewNoData)
     TextView textViewNoData;
 
-    @BindView(R.id.textViewNoDataDetails)
-    TextView textViewNoDataDetails;
-
-    @BindView(R.id.textViewNoDataOnDB)
-    TextView textViewNoDataDb;
-
     @BindView(R.id.chat)
     RecyclerView recyclerView;
 
@@ -121,6 +115,7 @@ public class FragmentChat extends Fragment {
         chatList = new ArrayList<>();
         keyList = new ArrayList<>();
 
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -160,6 +155,12 @@ public class FragmentChat extends Fragment {
                         }
                     }
                 }
+
+                if(chatList.size() == 0)
+                    textViewNoData.setVisibility(View.VISIBLE);
+                else
+                    textViewNoData.setVisibility(View.GONE);
+
                 adapter.notifyDataSetChanged();
             }
 

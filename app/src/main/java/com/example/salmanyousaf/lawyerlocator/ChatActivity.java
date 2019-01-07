@@ -2,22 +2,21 @@ package com.example.salmanyousaf.lawyerlocator;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,21 +44,17 @@ import io.paperdb.Paper;
 
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 
-
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String MESSAGES = "messages";
     @BindView(R.id.mViewChat)
-    LinearLayout mView;
+    RelativeLayout mView;
 
     @BindView(R.id.loading_indicator)
     ProgressBar loadingIndicator;
 
-    @BindView(R.id.textViewNoDataOnDB)
+    @BindView(R.id.textViewNoData)
     TextView textViewNoData;
-
-    @BindView(R.id.textViewServerProblem)
-    TextView textViewServerProblem;
 
     @BindView(R.id.EditTextMessage)
     TextInputEditText editTextMessage;
@@ -86,6 +81,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private String recieverEmail;
 
     private HelperMethods helperMethods = new HelperMethods();
+    private LinearLayoutManager mLayoutManager;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -115,8 +111,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         imageView.setOnClickListener(this);
 
-        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,
+                false);
+        mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAnimation(recycleAnimation);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -156,8 +153,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
 
     //Firebase methods
-    private void getChat()
-    {
+    private void getChat() {
+        loadingIndicator.setVisibility(View.GONE);
+        textViewNoData.setVisibility(View.VISIBLE);
+
         FirebaseRecyclerOptions<Chat> firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Chat>()
                 .setQuery(chatDatabaseReference.child(key).child(MESSAGES), Chat.class).build();
         adapter = new FirebaseRecyclerAdapter<Chat, MessageViewHolder>(firebaseRecyclerOptions) {
@@ -170,7 +169,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             protected void onBindViewHolder(@NonNull MessageViewHolder holder, int position, @NonNull Chat model) {
-                loadingIndicator.setVisibility(View.GONE);
+                textViewNoData.setVisibility(View.GONE);
 
                 TextView senderMessage =  holder.itemView.findViewById(R.id.tvSenderMessage);
                 TextView senderDate =  holder.itemView.findViewById(R.id.tvSenderDate);
@@ -205,12 +204,19 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 Toasty.error(ChatActivity.this, error.getMessage(), Toast.LENGTH_SHORT, true).show();
             }
         };
+
+        //for scrolling to bottom
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                mLayoutManager.smoothScrollToPosition(recyclerView, null, adapter.getItemCount());
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 
 
-    private void getStatus()
-    {
+    private void getStatus() {
         valueEventListener = new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -235,8 +241,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void sendMessage()
-    {
+    private void sendMessage() {
         if(editTextMessage.getText().toString().equals(""))
         {
             Toasty.error(ChatActivity.this, "No message to send", Toast.LENGTH_SHORT, true).show();
@@ -245,8 +250,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         {
             Chat chat = new Chat(senderEmail, recieverEmail, DateTime.now().toString(), editTextMessage.getText().toString());
             chatDatabaseReference.child(key).child(MESSAGES).push().setValue(chat);
+            editTextMessage.setText("");
             //TODO add listener later (indicators for each message)
         }
     }
+
 
 }//class ends.

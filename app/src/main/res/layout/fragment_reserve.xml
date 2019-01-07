@@ -24,68 +24,29 @@
 
         <ProgressBar
             android:id="@+id/loading_indicator"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:visibility="visible"
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
             android:indeterminateTint="@color/colorPrimary"
             tools:ignore="UnusedAttribute" />
 
-
         <TextView
             android:id="@+id/textViewNoData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="32sp"
+            android:textColor="#888"
+            android:textStyle="bold"
+            android:textSize="17sp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:text="No data found!"
+            android:text="@string/reserve_is_empty"
+            android:drawablePadding="2dp"
+            android:drawableLeft="@drawable/ic_storage_gray_24dp"
             android:visibility="gone"
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/textViewNoDataDetails"
-            android:layout_below="@id/textViewNoData"
-            android:layout_width="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="Check Ip Address from menu and try again."
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
-
-        <Button
-            android:id="@+id/buttonRefresh"
-            android:layout_below="@id/textViewNoDataDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="Refresh"
-            android:background="@drawable/button"
-            android:textColor="#fff"
-            android:padding="10dp"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
-
-
-        <TextView
-            android:id="@+id/textViewNoDataOnDB"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:fontFamily="casual"
-            android:textSize="22sp"
-            android:textColor="@android:color/holo_blue_light"
-            android:text="You have no Reserves!"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:drawableStart="@drawable/ic_storage_gray_24dp" />
 
 </RelativeLayout>

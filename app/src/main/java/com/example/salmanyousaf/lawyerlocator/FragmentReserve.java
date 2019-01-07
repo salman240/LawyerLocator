@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -58,20 +57,11 @@ public class FragmentReserve extends Fragment {
     @BindView(R.id.textViewNoData)
     TextView textViewNoData;
 
-    @BindView(R.id.textViewNoDataDetails)
-    TextView textViewNoDataDetails;
-
-    @BindView(R.id.textViewNoDataOnDB)
-    TextView textViewNoDataDb;
-
     @BindView(R.id.reserve)
     RecyclerView recyclerView;
 
     @BindView(R.id.loading_indicator)
     ProgressBar loadingIndicator;
-
-    @BindView(R.id.buttonRefresh)
-    Button button;
 
     private Unbinder unbinder;
 
@@ -93,6 +83,7 @@ public class FragmentReserve extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        textViewNoData.setVisibility(View.VISIBLE);
         adapter.startListening();
     }
 
@@ -138,13 +129,6 @@ public class FragmentReserve extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-        
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getReserves();
-            }
-        });
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -167,8 +151,6 @@ public class FragmentReserve extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull final ReserveViewHolder holder, int position, @NonNull final String model) {
-                loadingIndicator.setVisibility(View.GONE);
-
                 final TextView name =  holder.itemView.findViewById(R.id.name_text_view);
                 final ImageView image_view = holder.itemView.findViewById(R.id.image_view);
                 final TextView email = holder.itemView.findViewById(R.id.email_text_view);
@@ -176,6 +158,9 @@ public class FragmentReserve extends Fragment {
                 userDatabaseReference.child(model).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        loadingIndicator.setVisibility(View.GONE);
+                        textViewNoData.setVisibility(View.GONE);
+
                         final Signup signup = dataSnapshot.getValue(Signup.class);
                         if (signup != null)
                         {
@@ -209,8 +194,14 @@ public class FragmentReserve extends Fragment {
                 super.onError(error);
                 Toasty.error(Objects.requireNonNull(getActivity()), error.getMessage(), Toast.LENGTH_SHORT, true).show();
             }
+
+            @Override
+            public void onDataChanged() {
+                super.onDataChanged();
+            }
         };
         recyclerView.setAdapter(adapter);
+
     }
 
 }//class ends

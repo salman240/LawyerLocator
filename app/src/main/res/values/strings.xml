@@ -117,5 +117,8 @@
     <string name="logout">Logout</string>
     <string name="night_mode">Night Mode</string>
     <string name="register">Register</string>
+    <string name="chat_is_empty">Chat is empty</string>
+    <string name="reserve_is_empty">Reserve is empty</string>
+    <string name="no_messages">No messages</string>
 
 </resources>

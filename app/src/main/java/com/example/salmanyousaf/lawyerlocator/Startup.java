@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatDelegate;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.leakcanary.LeakCanary;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -36,6 +35,7 @@ public class Startup extends Application {
             Paper.book().write("isFirstTime", true);
         }
 
+/*
         //initializing leak canary
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
@@ -44,6 +44,7 @@ public class Startup extends Application {
         }
         // Normal app init code...
         LeakCanary.install(this);
+*/
 
         //Checking the preference for theme settings
         if(GetNightMode())
