@@ -1,52 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    android:id="@+id/mReserveView"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mReserveView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.salmanyousaf.lawyerlocator.DataActivity$PlaceholderFragment">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/swiperefreshReserve"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefreshReserve"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reserve"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/reserve"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="vertical"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
-
-        <ProgressBar
-            android:id="@+id/loading_indicator"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="visible"
-            android:indeterminate="true"
-            android:indeterminateTintMode="src_atop"
-            android:indeterminateTint="@color/colorPrimary"
-            tools:ignore="UnusedAttribute" />
+            android:scrollbars="vertical" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-        <TextView
-            android:id="@+id/textViewNoData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#888"
-            android:textStyle="bold"
-            android:textSize="17sp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:text="@string/reserve_is_empty"
-            android:drawablePadding="2dp"
-            android:drawableLeft="@drawable/ic_storage_gray_24dp"
-            android:visibility="gone"
-            android:drawableStart="@drawable/ic_storage_gray_24dp" />
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone"
+        tools:ignore="UnusedAttribute" />
+
+    <TextView
+        android:id="@+id/textViewNoData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:drawableStart="@drawable/ic_storage_gray_24dp"
+        android:drawableLeft="@drawable/ic_storage_gray_24dp"
+        android:drawablePadding="2dp"
+        android:text="@string/reserve_is_empty"
+        android:textColor="#888"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </RelativeLayout>

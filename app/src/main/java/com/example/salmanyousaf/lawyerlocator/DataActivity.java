@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.paperdb.Paper;
 
@@ -47,12 +49,14 @@ public class DataActivity extends AppCompatActivity{
     private Utils utils = new Utils(this);
 
     private DatabaseReference databaseReference;
+    private Unbinder unbinder;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
+        unbinder = ButterKnife.bind(this);
 
         //AppBar hotfix
         AppBarLayout appBarLayout = findViewById(R.id.appbar);
@@ -97,6 +101,7 @@ public class DataActivity extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
+        unbinder.unbind();
         //setting status to not active
         if(Paper.book().read("email") != null)
         {

@@ -158,7 +158,7 @@ public class FragmentReserve extends Fragment {
                 userDatabaseReference.child(model).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        loadingIndicator.setVisibility(View.GONE);
+//                        loadingIndicator.setVisibility(View.GONE);
                         textViewNoData.setVisibility(View.GONE);
 
                         final Signup signup = dataSnapshot.getValue(Signup.class);

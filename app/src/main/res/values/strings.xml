@@ -128,5 +128,6 @@
     <string name="remember_me">Remember me</string>
     <string name="next">Next</string>
     <string name="open_map">Open Map</string>
+    <string name="people_is_empty">People is empty</string>
 
 </resources>

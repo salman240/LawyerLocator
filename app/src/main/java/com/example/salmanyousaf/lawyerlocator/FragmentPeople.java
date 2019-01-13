@@ -65,12 +65,6 @@ public class FragmentPeople extends Fragment{
     @BindView(R.id.textViewNoData)
     TextView textViewNoData;
 
-    @BindView(R.id.textViewNoDataDetails)
-    TextView textViewNoDataDetails;
-
-    @BindView(R.id.textViewNoDataOnDB)
-    TextView textViewNoDataDb;
-
     @BindView(R.id.people)
     RecyclerView recyclerView;
 
@@ -223,7 +217,8 @@ public class FragmentPeople extends Fragment{
 
             @Override
             protected void onBindViewHolder(@NonNull final PeopleViewHolder holder, int position, @NonNull final Signup model) {
-                loadingIndicator.setVisibility(View.GONE);
+//                loadingIndicator.setVisibility(View.GONE);
+                textViewNoData.setVisibility(View.GONE);
 
                 TextView name = holder.itemView.findViewById(R.id.name_text_view);
                 TextView location = holder.itemView.findViewById(R.id.location_text_view);
