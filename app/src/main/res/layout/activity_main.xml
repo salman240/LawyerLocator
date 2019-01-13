@@ -1,42 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.salmanyousaf.lawyerlocator.MainActivity">
+    android:layout_height="wrap_content"
+    android:layout_above="@id/adView"
+    android:layout_alignParentTop="true">
 
-    <LinearLayout android:id="@+id/mainRoot"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mainRoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:orientation="vertical">
 
-        <TextView
+        <com.google.android.gms.ads.AdView android:id="@+id/adView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="v1.00"
-            android:textColor="#333"
-            android:layout_gravity="right"
-            android:padding="5dp"
-            android:background="@drawable/drawable_detail"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_gravity="center"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android">
+        </com.google.android.gms.ads.AdView>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextEmail"
             style="@style/signupEditTextStyle"
-            android:layout_marginTop="75dp"
-            android:text="salman@lawloc.com"
+            android:layout_marginTop="65dp"
             android:inputType="textWebEmailAddress"
             app:met_floatingLabelText="Email"
             app:met_helperText="Email Domain is @lawloc.com"
             app:met_iconLeft="@drawable/emails"
-            app:met_maxCharacters="50"
-            />
+            app:met_maxCharacters="50" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -47,53 +41,45 @@
                 android:id="@+id/editTextPassword"
                 style="@style/signupEditTextStyle"
                 android:inputType="textPassword"
-                android:text="12345678"
+                app:met_clearButton="false"
                 app:met_floatingLabelText="Password"
                 app:met_helperText="Password must contain minimum 8 charcters"
                 app:met_iconLeft="@drawable/password"
-                app:met_maxCharacters="50"
-                app:met_clearButton="false"/>
+                app:met_maxCharacters="50" />
 
         </android.support.design.widget.TextInputLayout>
-
-
 
         <com.rey.material.widget.CheckBox
             android:id="@+id/rememberMe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Remember me"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:text="@string/remember_me" />
 
         <Button
             android:id="@+id/buttonLogin"
             style="@style/buttonStyle"
-            android:layout_width="175dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginTop="32dp"
             android:text="@string/login"
             android:visibility="visible" />
 
-
-
-        <com.github.ybq.android.spinkit.SpinKitView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/loading_indicator"
-            android:visibility="gone"
             style="@style/SpinKitView.ThreeBounce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="62dp"
+            android:layout_gravity="center"
             android:layout_marginTop="32dp"
-            android:layout_gravity="right"
-            app:SpinKit_Color="@color/colorPrimary"
-            android:layout_marginEnd="62dp" />
-
+            android:visibility="gone"
+            app:SpinKit_Color="@color/colorPrimary" />
 
     </LinearLayout>
 
 </ScrollView>
+
 

@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'Salman Yousaf'
+            keyPassword 'samdon12'
+            storeFile file('C:/Users/SalmanGeForce/AndroidStudioApkKey.jks')
+            storePassword 'samdon12'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId 'com.example.salmanyousaf.lawyerlocator'
@@ -16,6 +24,7 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     productFlavors {
@@ -31,46 +40,36 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
     //Views
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     api 'com.rengwuxian.materialedittext:library:2.1.4'
-
     //JodaTime
     implementation 'net.danlew:android.joda:2.9.9.4'
-
     //Leak Canary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
-
     // RecyclerView
     implementation 'com.android.support:recyclerview-v7:28.0.0'
-
     //Google Maps
     api 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-
-
     api 'com.squareup.picasso:picasso:2.71828'
-
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
-
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-
     implementation 'com.github.GrenderG:Toasty:1.3.0'
     implementation 'com.github.ybq:Android-SpinKit:1.2.0'
     implementation 'com.github.rey5137:material:1.2.5'
     api 'io.paperdb:paperdb:2.6'
-
     //firebase
     implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
     // FirebaseUI for Firebase Realtime Database
     implementation 'com.firebaseui:firebase-ui-database:4.3.0'
-
     api 'com.github.f0ris.sweetalert:library:1.5.1'
     api 'com.stepstone.apprating:app-rating:2.3.0'
+
+    //Firebase ad
+    implementation 'com.google.firebase:firebase-ads:17.1.2'
 }

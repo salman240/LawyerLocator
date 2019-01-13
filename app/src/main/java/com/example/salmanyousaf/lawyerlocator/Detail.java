@@ -30,6 +30,8 @@ import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Chats;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Rating;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Signup;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -128,6 +130,9 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     private String senderEmail;
     private String reciverEmail;
     private Utils utils = new Utils(this);
@@ -160,6 +165,10 @@ public class Detail extends AppCompatActivity implements RatingDialogListener, V
         reserveDatabaseReference = firebaseDatabase.getReference("Reserve");
         chatDatabaseReference = firebaseDatabase.getReference("Chat");
         DatabaseReference userDatabaseReference = firebaseDatabase.getReference("User");
+
+        //Admob
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);

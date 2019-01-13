@@ -3,84 +3,90 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.salmanyousaf.lawyerlocator">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="com.google.android.gsf.permission.READ_GSERVICES" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="com.google.android.gsf.permission.READ_GSERVICES" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <application
-        android:name=".Startup"
-        android:allowBackup="true"
-        android:icon="@drawable/logo_circle"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
-        tools:replace="android:icon">
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAHnye_n2avvXwFFMdNN97UaUGnPzzu-gs" />
+  <application
+      android:name=".Startup"
+      android:allowBackup="true"
+      android:icon="@drawable/logo_circle"
+      android:label="@string/app_name"
+      android:roundIcon="@mipmap/ic_launcher_round"
+      android:supportsRtl="true"
+      android:theme="@style/AppTheme"
+      tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+      tools:replace="android:icon">
 
-        <activity
-            android:name=".SplashScreen"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    <!--google maps-->
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyAHnye_n2avvXwFFMdNN97UaUGnPzzu-gs" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".SignupActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-        <!-- <activity android:name=".Search" /> -->
-        <activity
-            android:name=".Detail"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".MyProfile"
-            android:parentActivityName=".DataActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".DataActivity"
-            android:label="@string/title_activity_data"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NoNetworkActivity" />
-        <activity android:name=".ChatActivity" />
-        <activity android:name=".Settings" />
+    <!--admob-->
+    <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-3940256099942544~3347511713"/>
 
-        <!--
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAHnye_n2avvXwFFMdNN97UaUGnPzzu-gs" />
+    <activity
+        android:name=".SplashScreen"
+        android:configChanges="orientation|keyboardHidden"
+        android:screenOrientation="portrait">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
 
-        <activity
-            android:name="com.example.salmanyousaf.lawyerlocator.Map.MapsActivity"
-            android:label="Path Finder"
-            />
-        -->
-        <activity
-            android:name=".NotificationActivity"
-            android:label="Reserve Notifications" />
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity android:name=".AdminActivity" />
-        <activity
-            android:name=".ShowImageActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_show_image"
-            android:theme="@style/FullscreenTheme" />
-    </application>
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <activity
+        android:name=".SignupActivity"
+        android:windowSoftInputMode="stateHidden" />
+    <activity
+        android:name=".MainActivity"
+        android:screenOrientation="portrait"
+        android:windowSoftInputMode="stateHidden" />
+    <activity
+        android:name=".Detail"
+        android:windowSoftInputMode="stateHidden" />
+    <activity
+        android:name=".MyProfile"
+        android:parentActivityName=".DataActivity"
+        android:windowSoftInputMode="stateHidden" />
+    <activity
+        android:name=".DataActivity"
+        android:label="@string/title_activity_data"
+        android:theme="@style/AppTheme.NoActionBar" />
+    <activity android:name=".NoNetworkActivity" />
+    <activity android:name=".ChatActivity" />
+    <activity android:name=".Settings" />
+    <activity
+        android:name=".NotificationActivity"
+        android:label="Reserve Notifications" />
+    <activity
+        android:name=".MapsActivity"
+        android:label="@string/title_activity_maps" />
+    <activity android:name=".AdminActivity" />
+    <activity
+        android:name=".ShowImageActivity"
+        android:configChanges="orientation|keyboardHidden|screenSize"
+        android:label="@string/title_activity_show_image"
+        android:theme="@style/FullscreenTheme" />
+
+    <!--
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyAHnye_n2avvXwFFMdNN97UaUGnPzzu-gs" />
+
+    <activity
+        android:name="com.example.salmanyousaf.lawyerlocator.Map.MapsActivity"
+        android:label="Path Finder"
+        />
+    -->
+  </application>
 
 </manifest>

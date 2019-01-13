@@ -25,6 +25,8 @@ import com.example.salmanyousaf.lawyerlocator.Helper.HelperMethods;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Chat;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,6 +67,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.chatRecycleView)
     RecyclerView recyclerView;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     @BindAnim(R.anim.zoom_in)
     Animation recycleAnimation;
 
@@ -93,6 +98,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         chatDatabaseReference = firebaseDatabase.getReference("Chat");
         userDatabaseReference = firebaseDatabase.getReference("User");
+
+        //Admob
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         actionBar = getSupportActionBar();
         Objects.requireNonNull(actionBar).setTitle(R.string.chat);

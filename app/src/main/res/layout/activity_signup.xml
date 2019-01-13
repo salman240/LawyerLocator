@@ -12,16 +12,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <com.google.android.gms.ads.AdView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id">
+        </com.google.android.gms.ads.AdView>
+
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/signupEditTextStyle"
-            android:text="salman@lawloc.com"
             android:id="@+id/editTextEmail"
-            android:inputType="textWebEmailAddress"
+            style="@style/signupEditTextStyle"
             android:layout_marginTop="24dp"
+            android:inputType="textWebEmailAddress"
             app:met_floatingLabelText="Email"
             app:met_helperText="Email domain is @lawloc.com"
             app:met_iconLeft="@drawable/emails"
+            android:layout_below="@id/adView"
             app:met_maxCharacters="50" />
 
         <Button
@@ -29,27 +39,25 @@
             style="@style/buttonStyle"
             android:layout_width="wrap_content"
             android:layout_below="@id/editTextEmail"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="Next"
             android:background="@drawable/button"
-            android:layout_alignParentEnd="true" />
+            android:text="@string/next" />
 
-        <com.github.ybq.android.spinkit.SpinKitView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/loading_indicator_button_email"
-            android:layout_below="@id/editTextEmail"
-            android:layout_alignParentRight="true"
-            android:visibility="visible"
             style="@style/SpinKitView.DoubleBounce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="36dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="32dp"
-            app:SpinKit_Color="@color/colorPrimary"
+            android:layout_below="@id/editTextEmail"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="36dp" />
-
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginRight="36dp"
+            android:layout_marginBottom="32dp"
+            android:visibility="visible"
+            app:SpinKit_Color="@color/colorPrimary" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/passwordTogggle"
@@ -59,205 +67,193 @@
             app:passwordToggleEnabled="true">
 
             <com.rengwuxian.materialedittext.MaterialEditText
-                style="@style/signupEditTextStyle"
-                android:text="12345678"
                 android:id="@+id/editTextPassword"
-                android:inputType="textPassword"
+                style="@style/signupEditTextStyle"
                 android:layout_marginTop="4dp"
+                android:inputType="textPassword"
+                app:met_clearButton="false"
                 app:met_floatingLabelText="Password"
                 app:met_helperText="Password must contain minimum 8 characters"
                 app:met_iconLeft="@drawable/password"
-                app:met_maxCharacters="50"
-                app:met_clearButton="false"
-                />
+                app:met_maxCharacters="50" />
 
         </android.support.design.widget.TextInputLayout>
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/signupEditTextStyle"
-            android:text="Salman"
             android:id="@+id/editTextName"
+            style="@style/signupEditTextStyle"
             android:layout_below="@id/passwordTogggle"
-            android:inputType="textCapWords"
             android:layout_marginTop="4dp"
+            android:inputType="textCapWords"
             app:met_floatingLabelText="Name"
             app:met_helperText="@string/LoginName"
             app:met_iconLeft="@drawable/username"
             app:met_maxCharacters="50" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/signupEditTextStyle"
-            android:text="03234380625"
             android:id="@+id/editTextPhoneNo"
+            style="@style/signupEditTextStyle"
             android:layout_below="@id/editTextName"
-            android:inputType="number"
             android:layout_marginTop="4dp"
+            android:inputType="number"
             app:met_floatingLabelText="Contact No."
             app:met_helperText="@string/LoginPhoneNo"
             app:met_iconLeft="@drawable/contact"
             app:met_maxCharacters="30" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/signupEditTextStyle"
-            android:text="Personal"
             android:id="@+id/editTextCaseType"
+            style="@style/signupEditTextStyle"
             android:layout_below="@id/editTextPhoneNo"
-            android:inputType="textCapSentences"
             android:layout_marginTop="4dp"
+            android:inputType="textCapSentences"
             app:met_floatingLabelText="Case Type"
             app:met_helperText="@string/LoginCaseType"
             app:met_iconLeft="@drawable/case_type"
-            app:met_maxCharacters="25"/>
+            app:met_maxCharacters="25" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/signupEditTextStyle"
-            android:text="5"
             android:id="@+id/editTextExperience"
+            style="@style/signupEditTextStyle"
             android:layout_below="@id/editTextCaseType"
-            android:inputType="numberDecimal"
             android:layout_marginTop="4dp"
+            android:inputType="numberDecimal"
             app:met_floatingLabelText="Experience"
             app:met_helperText="@string/LoginExperience"
             app:met_iconLeft="@drawable/experience"
             app:met_maxCharacters="10" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/signupEditTextStyle"
-            android:text="5000"
             android:id="@+id/editTextCost"
+            style="@style/signupEditTextStyle"
             android:layout_below="@id/editTextExperience"
-            android:inputType="number"
             android:layout_marginTop="4dp"
+            android:inputType="number"
             app:met_floatingLabelText="Fee"
             app:met_helperText="@string/LoginCost"
             app:met_iconLeft="@drawable/cost"
             app:met_maxCharacters="10" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/signupEditTextStyle"
-            android:text="I am Don"
             android:id="@+id/editTextDescription"
+            style="@style/signupEditTextStyle"
             android:layout_below="@id/editTextCost"
-            android:inputType="textCapSentences"
             android:layout_marginTop="4dp"
+            android:inputType="textCapSentences"
             app:met_floatingLabelText="Description"
             app:met_helperText="@string/LoginDescription"
             app:met_iconLeft="@drawable/description"
             app:met_maxCharacters="150" />
 
-
         <TextView
             android:id="@+id/textViewLocation"
             style="@style/textStyle"
             android:layout_below="@+id/editTextDescription"
-            android:text="@string/LoginLocation"/>
+            android:text="@string/LoginLocation" />
 
         <Button
             android:id="@+id/buttonMap"
-            android:layout_below="@id/editTextDescription"
-            android:text="Open Map"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
+            android:layout_below="@id/editTextDescription"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:padding="16dp"
             android:layout_margin="16dp"
-            android:textColor="@android:color/black"
             android:background="@drawable/spinner_button"
-            android:onClick="Map"/>
-
+            android:onClick="Map"
+            android:padding="16dp"
+            android:text="@string/open_map"
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/tvMap"
-            android:layout_below="@id/editTextDescription"
-            android:text="Location"
             android:layout_width="170dp"
-            android:maxHeight="82dp"
             android:layout_height="wrap_content"
+            android:layout_below="@id/editTextDescription"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:padding="16dp"
             android:layout_margin="16dp"
-            android:visibility="invisible"/>
-
+            android:maxHeight="82dp"
+            android:padding="16dp"
+            android:text="@string/location"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/textViewGender"
             style="@style/textStyle"
             android:layout_below="@+id/buttonMap"
-            android:text="@string/selectGender"/>
+            android:text="@string/selectGender" />
 
         <Spinner
             android:id="@+id/spinnerGender"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textAlignment="center"
-            android:padding="16dp"
-            android:layout_margin="16dp"
             android:layout_below="@+id/buttonMap"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
             android:entries="@array/cities_gender"
+            android:padding="16dp"
             android:prompt="@string/Prompt_Gender"
-            android:layout_alignParentEnd="true" />
+            android:textAlignment="center" />
 
         <TextView
             android:id="@+id/textViewProfile"
             style="@style/textStyle"
             android:layout_below="@+id/spinnerGender"
-            android:text="@string/selectProfile"/>
+            android:text="@string/selectProfile" />
 
         <Button
             android:id="@+id/buttonProfile"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="16dp"
-            android:textColor="@android:color/black"
-            android:layout_margin="16dp"
             android:layout_below="@id/textViewGender"
-            android:text="@string/select"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
             android:background="@drawable/spinner_button"
-            android:layout_alignParentEnd="true" />
+            android:padding="16dp"
+            android:text="@string/select"
+            android:textColor="@android:color/black" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView"
-            android:layout_below="@id/textViewProfile"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:visibility="gone"/>
+            android:layout_below="@id/textViewProfile"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/buttonSignup"
             style="@style/buttonStyle"
             android:layout_width="wrap_content"
             android:layout_below="@id/imageView"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="@string/create"
             android:background="@drawable/button"
-            android:layout_alignParentEnd="true" />
-
+            android:text="@string/create" />
 
         <ProgressBar
             android:id="@+id/loading_indicator_email"
             android:layout_width="match_parent"
             android:layout_height="16dp"
             android:layout_below="@+id/editTextEmail"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
-
-        <com.github.ybq.android.spinkit.SpinKitView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/loading_indicator_button"
-            android:layout_below="@id/imageView"
-            android:layout_alignParentRight="true"
-            android:visibility="gone"
             style="@style/SpinKitView.Large.Wave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="62dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="32dp"
-            app:SpinKit_Color="@color/colorPrimary"
+            android:layout_below="@id/imageView"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="62dp" />
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="62dp"
+            android:layout_marginRight="62dp"
+            android:layout_marginBottom="32dp"
+            android:visibility="gone"
+            app:SpinKit_Color="@color/colorPrimary" />
 
     </RelativeLayout>
 

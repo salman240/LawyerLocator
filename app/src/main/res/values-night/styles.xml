@@ -19,7 +19,7 @@
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginRight">16dp</item>
-        <item name="met_errorColor">@color/redNight</item>
+        <item name="met_errorColor">@color/red_btn_bg_color</item>
         <item name="met_floatingLabel">highlight</item>
         <item name="met_floatingLabelAnimating">true</item>
         <item name="met_baseColor">@color/textColorButton</item>

@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -32,6 +33,8 @@ import android.widget.Toast;
 import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Signup;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -130,6 +133,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     @BindView(R.id.passwordTogggle)
     TextInputLayout textInputLayoutPassword;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     @BindColor(R.color.redNight)
     int redNight;
 
@@ -174,6 +180,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         databaseReference = firebaseDatabase.getReference("User");
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference("images");
+
+        //Admob
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         //progessDialog init
         progressDialog = new ProgressDialog(this);
@@ -414,7 +424,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     //Edit Text's focus listener
     View.OnFocusChangeListener onFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
-        public void onFocusChange(View view, boolean b) {
+        public void onFocusChange(View view, final boolean b) {
             if (b && view.getId() == R.id.editTextEmail) {
                 if (editTextEmail.getText().toString().equals("")) {
                     editTextEmail.setError("Email is required");

@@ -22,6 +22,9 @@ import android.widget.Toast;
 import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Signup;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,7 +43,6 @@ import io.paperdb.Paper;
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.isEmailValid;
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.isPasswordValid;
-
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -62,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.rememberMe)
     com.rey.material.widget.CheckBox rememberMe;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     private boolean mEditTextChanged;
     private Unbinder unbinder;
     private Utils utils = new Utils(this);
@@ -81,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         userDatabaseReference = firebaseDatabase.getReference("User");
+
+        //Admob
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.login);
 

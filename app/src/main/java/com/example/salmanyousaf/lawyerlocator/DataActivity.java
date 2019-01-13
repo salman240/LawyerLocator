@@ -23,6 +23,8 @@ import android.view.MenuItem;
 import com.example.salmanyousaf.lawyerlocator.Helper.Utils;
 import com.example.salmanyousaf.lawyerlocator.Model.Firebase.Signup;
 import com.example.salmanyousaf.lawyerlocator.Utilities.FixAppBarLayoutBehavior;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -30,12 +32,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.paperdb.Paper;
 
 import static com.example.salmanyousaf.lawyerlocator.Helper.Utils.encodeEmail;
 
 public class DataActivity extends AppCompatActivity{
+
+    @BindView(R.id.adView)
+    AdView mAdView;
 
     private TabLayout tabLayout;
     private Utils utils = new Utils(this);
@@ -55,6 +61,10 @@ public class DataActivity extends AppCompatActivity{
         //Firebase init
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("User");
+
+        //Admob
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

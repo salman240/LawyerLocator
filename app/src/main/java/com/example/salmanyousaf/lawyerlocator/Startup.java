@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -16,7 +17,6 @@ import static com.example.salmanyousaf.lawyerlocator.Contracts.Contracts.NIGHT__
 
 
 public class Startup extends Application {
-
 
     @Override
     public void onCreate() {
@@ -36,27 +36,25 @@ public class Startup extends Application {
         }
 
 /*
-        //initializing leak canary
+        //initializing leak canary(only for debug purpose)
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
         // Normal app init code...
-        LeakCanary.install(this);
+        LeakCanary.install(this);*
 */
 
         //Checking the preference for theme settings
-        if(GetNightMode())
-        {
+        if(GetNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
 
     }
 
 
-    private Boolean GetNightMode()
-    {
+    private Boolean GetNightMode() {
         SharedPreferences sharedPreferences = getSharedPreferences(NIGHT__PREFERENCE, MODE_PRIVATE);
         return sharedPreferences.getBoolean(IS_NIGHT, false);
     }
